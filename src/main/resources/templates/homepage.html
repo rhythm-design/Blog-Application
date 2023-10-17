@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf Demo</title>
+    <link rel="stylesheet" th:href="@{/css/darkmode.css}">
+</head>
+<body>
+<div>
+    <div th:each="post: ${posts_list}" style="border: 3px solid red; margin: 4px; width: 50%; align-items: center">
+<!--        <div th:class="'postlabel'">-->
+<!--            &lt;!&ndash; One more loop for 3 tag iteration here&ndash;&gt;-->
+<!--            <a th:href="'/'" th:text="Nature"></a>-->
+<!--            <a th:href="'/'" th:text="Animals"></a>-->
+<!--        </div>-->
+        <a th:href="'/'">
+            <h2 th:text="*{post.postTitle}"></h2>
+        </a>
+        <p th:text="*{post.postContent}" th:class="post-content"></p>
+        <a th:href="@{'/posts/' + ${post.id}}"> <button>Open Post</button> </a>
+        <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>
+    </div>
+</div>
+</body>
+</html>
