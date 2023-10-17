@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Comment</title>
+    <link rel="stylesheet" th:href="@{/css/darkmode.css}">
+</head>
+<body>
+<div th:object="${comment_data}">
+    <form th:action="@{'/comment/update-comment/' +${comment_post_id}}" th:method="post">
+        <input type="hidden" th:value="*{id}" name="commentId">
+        <textarea th:text="*{comment}" name="updatedComment"></textarea>
+        <input type="submit" value="Update Comment!">
+    </form>
+</div>
+</body>
+</html>

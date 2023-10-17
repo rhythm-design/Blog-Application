@@ -34,6 +34,12 @@ public class PostController {
         return "redirect:/";
     }
 
+    @GetMapping("/edit/{postId}")
+    public String editPostById(@PathVariable int postId){
+        postService.deleteById(postId);
+        return "redirect:/";
+    }
+
     @PostMapping("/addcomment/{postId}")
     public String addCommentByPostId(@PathVariable int postId,
                                      @RequestParam("user_name") String name,

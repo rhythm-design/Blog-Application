@@ -30,9 +30,6 @@ public class Comment {
     @NonNull
     private String comment;
 
-//    @Column(name = "post_i")
-//    private long postId;
-
     @Column(name = "created_at")
     private Date createdAt;
 
