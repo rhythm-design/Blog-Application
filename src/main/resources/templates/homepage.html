@@ -20,7 +20,7 @@
         <p th:text="*{post.postContent}" th:class="post-content"></p>
         <strong>Tags:</strong>
         <div th:each="tag: *{post.tags}">
-            <p th:text="*{tag}"></p>
+            <p th:text="*{tag.name}"></p>
         </div>
         <a th:href="@{'/posts/' + ${post.id}}"> <button>Open Post</button> </a>
         <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>

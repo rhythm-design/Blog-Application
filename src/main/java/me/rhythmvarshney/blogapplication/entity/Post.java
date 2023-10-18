@@ -18,7 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "title", unique = true)
+    @Column(name = "title")
     @NonNull
     private String postTitle;
 
@@ -73,6 +73,15 @@ public class Post {
         if(tags == null){
             tags = new HashSet<>();
         }
+
         tags.add(tag);
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", postTitle='" + postTitle + '\'' +
+                '}';
     }
 }

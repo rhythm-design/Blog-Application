@@ -4,12 +4,11 @@ import me.rhythmvarshney.blogapplication.entity.Comment;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
 import me.rhythmvarshney.blogapplication.service.PostService;
+import me.rhythmvarshney.blogapplication.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 import java.util.Date;
 
 
@@ -19,9 +18,12 @@ public class PostController {
 
     private PostService postService;
 
+    private TagService tagService;
+
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, TagService tagService) {
         this.postService = postService;
+        this.tagService = tagService;
     }
 
     @GetMapping("/createPost")
@@ -35,16 +37,14 @@ public class PostController {
                              @RequestParam("isPublished") boolean isPublished,
                              @RequestParam("tags") String tags
                              ){
-        String[] tagsList = tags.split(",");
         Post post = new Post(title, excerpt, content, "rhythm", new Date(), isPublished, new Date());
-        System.out.println("tags: " +tags);
-        Tag tag = new Tag();
-        tag.setName(tagsList[0]);
-        Tag tag1= new Tag();
-        tag1.setName(tagsList[1]);
-        post.addTag(tag);
-        post.addTag(tag1);
+        String[] tagList = tags.split(",");
+        for(String tag: tagList){
+            Tag tempTag = tagService.findTagByName(tag);
+            post.addTag(tempTag);
+        }
         postService.save(post);
+        tagService.test("java");
         return "redirect:/";
     }
 
