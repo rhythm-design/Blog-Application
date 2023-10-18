@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample</title>
+    <link rel="stylesheet" th:href="@{/css/login-signup-page.css}">
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="heading">
+        <p class="heading-text">Login</p>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="username" class="input-field" placeholder="Username" >
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="password" class="input-field" placeholder="Password" >
+    </div>
+
+    <div class="input-group button-div">
+        <button>Login <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <div class="input-group row">
+
+        <div class="row">
+            <p>Doesn't have account? <a href="#" target="_blank"> Create One!</a></p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample</title>
+    <link rel="stylesheet" th:href="@{/css/sample.css}">
+    <script>
+        // Get a reference to the select element
+        var filterSelect = document.getElementById('sortBy');
+
+        // Add an event listener to the select element
+        filterSelect.addEventListener('change', function() {
+            // Get the form element
+            var form = document.getElementById('sortForm');
+            // Submit the form
+            form.submit();
+        });
+    </script>
+</head>
+<body>
+ <div class="blog-container">
+
+        <div class="blog-activities">
+            <p class="heading">My Blog Application</p>
+        </div>
+
+        <div class="blog-activities">
+            <form>
+                <input type="text" th:name="'searchData'" class="input-field"/>
+                <input type="submit" style="display: none;"/>
+            </form>
+            <a th:href="'#'">Login</a>
+            <div>
+                <form id="filterForm">
+                    <select name="filterBy" class="dropdown-field" id="filterBy">
+                        <option value="author">Author</option>
+                        <option value="tag">Tag</option>
+                        <option value="title">Title</option>
+                        <option value="date">Date</option>
+                    </select>
+                    <input type="submit" style="display: none;"/>
+                </form>
+
+                <form id="sortForm" action="#" method="get">
+                    <select name="sortBy" class="dropdown-field" id="sortBy">
+                        <option value="createdFirst">Created First</option>
+                        <option value="createdLast">Created Last</option>
+                        <option value="author">Author(A-Z)</option>
+                        <option value="title">Title(A-Z)</option>
+                    </select>
+                </form>
+            </div>
+
+        </div>
+
+        <div th:each="post: ${posts_list}" th:class="'blog-data'">
+            <p th:text="*{post.postTitle}"></p>
+<!--            <p th:text="*{post.tags}"></p>-->
+            <p th:text="*{post.author}"></p>
+            <p th:text="*{post.postCreateTime}"></p>
+            <p th:text="*{post.postContent}"></p>
+        </div>
+    </div>
+</body>
+</html>

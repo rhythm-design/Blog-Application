@@ -42,4 +42,10 @@ public class BlogApplicationController {
         model.addAttribute("posts_list", postRepository.findAll());
         return "homepage";
     }
+
+    @GetMapping("/sample")
+    public String test1(Model model){
+        model.addAttribute("posts_list", postRepository.findAll());
+        return "sample";
+    }
 }
