@@ -7,7 +7,7 @@
 </head>
 <body>
 <div>
-    <button type="submit" class="delete-button">Create Post</button>
+    <a th:href="'/posts/createPost'"><button type="submit" class="delete-button">Create Post</button></a>
     <div th:each="post: ${posts_list}" style="border: 3px solid red; margin: 4px; width: 50%; align-items: center">
 <!--        <div th:class="'postlabel'">-->
 <!--            &lt;!&ndash; One more loop for 3 tag iteration here&ndash;&gt;-->
@@ -18,6 +18,10 @@
             <h2 th:text="*{post.postTitle}"></h2>
         </a>
         <p th:text="*{post.postContent}" th:class="post-content"></p>
+        <strong>Tags:</strong>
+        <div th:each="tag: *{post.tags}">
+            <p th:text="*{tag}"></p>
+        </div>
         <a th:href="@{'/posts/' + ${post.id}}"> <button>Open Post</button> </a>
         <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>
         <a th:href="@{'/posts/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>

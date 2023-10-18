@@ -3,9 +3,7 @@ package me.rhythmvarshney.blogapplication.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "posts")
@@ -49,11 +47,19 @@ public class Post {
     private Date postCreateTime;
 
     @Column(name = "updated_at")
-    @NonNull
     private Date updateTime;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
+    })
+    @JoinTable(name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
     public void addComment(Comment comment){
         if(comments == null){
@@ -62,12 +68,11 @@ public class Post {
         comment.setPost(this);
         comments.add(comment);
     }
-//    public void addCourse(Course course){
-//        if(courses == null){
-//            courses = new ArrayList<>();
-//        }
-//
-//        course.setInstructor(this);
-//        courses.add(course);
-//    }
+
+    public void addTag(Tag tag){
+        if(tags == null){
+            tags = new HashSet<>();
+        }
+        tags.add(tag);
+    }
 }

@@ -31,7 +31,7 @@ public class BlogApplicationController {
             InputStream responseStream = connection.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(responseStream);
-            Post post = new Post("title " + i,"excerpt " + i, root.path("text").asText(),"author" + i,new Date(),true,new Date(),new Date());
+            Post post = new Post("title " + i,"excerpt " + i, root.path("text").asText(),"author" + i,new Date(),true,new Date());
             postRepository.save(post);
             System.out.println("Saved Post");
         }
