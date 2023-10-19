@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    padding:0;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body{
+    padding: 50px;
+    padding-top: 10px;
+}
+
+.blog-container {
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.blog-activities{
+    /*border: 2px solid green;*/
+    height: 150px;
+    text-align: center;
+}
+
+.blog-activities div{
+    /*display: inline;*/
+}
+
+#pageForm, #search-input, #sortForm, #filterForm{
+    display: inline;
+}
+
+#pageForm{
+    display: inline;
+}
+.input-field{
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    border: 2px solid #000;
+    color: #000;
+    width: 40%;
+    height: 30px;
+    padding-left: 10px;
+    display: inline;
+}
+
+.blog-data{
+    border: 2px solid black;
+    height: 200px;
+    position: relative;
+    cursor: pointer;
+}
+
+.link {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.blog-container div{
+
+}
+
+.heading{
+    font-size: xxx-large;
+}
+
+.blog-activities{
+
+}
+
+.dropdown-field{
+    width: 45%;
+    height: 35px;
+    border: 2px solid black;
+    padding: 8px;
+    outline: none;
+    font-size: 10px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    background-color: white;
+}
+
+.post-title{
+    font-size: xx-large;
+    margin: 10px;
+}
+
+.post-author{
+    font-size: large;
+    margin: 15px;
+}
+
+.post-excerpt{
+    margin: 15px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* Number of lines you want to display */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+
+/*njenfief*/
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 45%;
+    height: 35px;
+    border: 2px solid black;
+    padding: 8px;
+    outline: none;
+    font-size: 10px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    background-color: white;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 35px;
+    border: 2px solid black;
+    padding: 8px;
+    outline: none;
+    font-size: 10px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    background-color: white;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    width: 45%;
+    height: 35px;
+    border: 2px solid black;
+    padding: 8px;
+    outline: none;
+    font-size: 10px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    background-color: white;
+}
+
+.content-cccc{
+    border: 2px solid red;
+    width: 100%;
+}

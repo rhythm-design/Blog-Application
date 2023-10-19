@@ -10,10 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
-@RequestMapping("/posts")
 public class PostController {
 
     private PostService postService;
@@ -26,6 +27,12 @@ public class PostController {
         this.tagService = tagService;
     }
 
+    @GetMapping("/")
+    public String homepage(@RequestParam Map<String,String> params, Model model){
+        List<Post> posts = postService.findAllByParams(params);
+        model.addAttribute("posts_list", posts);
+        return "homepage";
+    }
     @GetMapping("/createPost")
     public String createPost(){
         return "post-form";

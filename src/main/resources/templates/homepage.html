@@ -1,30 +1,134 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Thymeleaf Demo</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/darkmode.css}">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div>-->
+<!--    <a th:href="'/posts/createPost'"><button type="submit" class="delete-button">Create Post</button></a>-->
+<!--    <div th:each="post: ${posts_list}" style="border: 3px solid red; margin: 4px; width: 50%; align-items: center">-->
+<!--&lt;!&ndash;        <div th:class="'postlabel'">&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash; One more loop for 3 tag iteration here&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            <a th:href="'/'" th:text="Nature"></a>&ndash;&gt;-->
+<!--&lt;!&ndash;            <a th:href="'/'" th:text="Animals"></a>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--        <a th:href="'/'">-->
+<!--            <h2 th:text="*{post.postTitle}"></h2>-->
+<!--        </a>-->
+<!--        <p th:text="*{post.postContent}" th:class="post-content"></p>-->
+<!--        <strong>Tags:</strong>-->
+<!--        <div th:each="tag: *{post.tags}">-->
+<!--            <p th:text="*{tag.name}"></p>-->
+<!--        </div>-->
+<!--        <a th:href="@{'/posts/' + ${post.id}}"> <button>Open Post</button> </a>-->
+<!--        <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>-->
+<!--        <a th:href="@{'/posts/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Thymeleaf Demo</title>
-    <link rel="stylesheet" th:href="@{/css/darkmode.css}">
+    <title>Sample</title>
+    <link rel="stylesheet" th:href="@{/css/homepage.css}">
 </head>
 <body>
-<div>
-    <a th:href="'/posts/createPost'"><button type="submit" class="delete-button">Create Post</button></a>
-    <div th:each="post: ${posts_list}" style="border: 3px solid red; margin: 4px; width: 50%; align-items: center">
-<!--        <div th:class="'postlabel'">-->
-<!--            &lt;!&ndash; One more loop for 3 tag iteration here&ndash;&gt;-->
-<!--            <a th:href="'/'" th:text="Nature"></a>-->
-<!--            <a th:href="'/'" th:text="Animals"></a>-->
-<!--        </div>-->
-        <a th:href="'/'">
-            <h2 th:text="*{post.postTitle}"></h2>
-        </a>
-        <p th:text="*{post.postContent}" th:class="post-content"></p>
-        <strong>Tags:</strong>
-        <div th:each="tag: *{post.tags}">
-            <p th:text="*{tag.name}"></p>
+<div class="blog-container">
+
+    <div class="blog-activities-1">
+        <p class="heading">My Blog Application</p>
+    </div>
+
+    <div class="blog-activities">
+        <a th:href="'#'" th:class="'login-class'">Login</a>
+        <section>
+<!--            <form id="search-input">-->
+<!--                <input type="text" th:name="'searchData'" class="input-field"/>-->
+<!--                <input type="submit" style="display: none;"/>-->
+<!--            </form>-->
+<!--            <form id="pageForm" action="#" method="get">-->
+<!--                <select name="pageCount" class="dropdown-field" id="pageCount">-->
+<!--                    <option value="none" selected disabled hidden>Blogs per page</option>-->
+<!--                    <option value="10">10</option>-->
+<!--                    <option value="20">20</option>-->
+<!--                    <option value="30">30</option>-->
+<!--                    <option value="40">40</option>-->
+<!--                </select>-->
+<!--            </form>-->
+        </section>
+        <div>
+            <div class="dropdown">
+                <span>Sort By</span>
+                <div class="dropdown-content">
+                    <a th:href="@{'/?sortField=publishedAt&order=asc'}" th:class="'content-cccc'">New First</a>
+                    <a th:href="@{'/?sortField=publishedAt&order=desc'}" th:class="'content-cccc'">Old First</a>
+                    <a th:href="@{'/?sortField=author&order=asc'}" th:class="'content-cccc'">Author(A-Z)</a>
+                    <a th:href="@{'/?sortField=author&order=desc'}" th:class="'content-cccc'">Author(Z-A)</a>
+                    <a th:href="@{'/?sortField=title&order=asc'}" th:class="'content-cccc'">Title(A-Z)</a>
+
+                </div>
+            </div>
+
+<!--            <form id="sortForm" action="/" method="get">-->
+<!--                <select name="sortField" class="dropdown-field" id="sortBy">-->
+<!--                    <option value="none" selected disabled hidden>Sort By</option>'-->
+<!--                    <option value="publishedAt">Created First</option>-->
+<!--                    <option value="createdLast">Created Last</option>-->
+<!--                    <option value="author">Author(A-Z)</option>-->
+<!--                    <option value="title">Title(A-Z)</option>-->
+<!--                </select>-->
+<!--            </form>-->
+
+<!--            <script>-->
+<!--                // Get a reference to the select element-->
+<!--                var sortBySelect = document.getElementById('sortBy');-->
+
+<!--                // Add an event listener to the select element-->
+<!--                sortBySelect.addEventListener('change', function() {-->
+<!--                    // Check if a valid option is selected (not the default "none" option)-->
+<!--                    if (sortBySelect.value !== "none") {-->
+<!--                        // Get the form element-->
+<!--                        var form = document.getElementById('sortForm');-->
+<!--                        // Submit the form-->
+<!--                        form.submit();-->
+<!--                    }-->
+<!--                });-->
+<!--            </script>-->
+
+
+<!--            <form id="filterForm">-->
+<!--                <select name="filterBy" class="dropdown-field" id="filterBy">-->
+<!--                    <option value="none" selected disabled hidden>Filter By </option>-->
+<!--                    <option value="author">Author</option>-->
+<!--                    <option value="tag">Tag</option>-->
+<!--                    <option value="title">Title</option>-->
+<!--                    <option value="date">Date</option>-->
+<!--                </select>-->
+<!--                &lt;!&ndash;                    <input type="text"/>&ndash;&gt;-->
+<!--                <input type="submit" style="display: none;"/>-->
+<!--            </form>-->
         </div>
-        <a th:href="@{'/posts/' + ${post.id}}"> <button>Open Post</button> </a>
-        <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>
-        <a th:href="@{'/posts/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>
+
+    </div>
+
+
+
+    <div th:each="post: ${posts_list}" th:class="'blog-data'">
+        <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
+        <!--            <p th:text="*{post.tags}"></p>-->
+        <span th:text="*{post.author}" th:class="'post-author'"></span>
+        <span th:text="*{post.postCreateTime.toLocaleString()}" ></span>
+        <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
+
+        <a th:href="@{'/' + ${post.id}}">
+            <span class="link"></span>
+        </a>
     </div>
 </div>
 </body>

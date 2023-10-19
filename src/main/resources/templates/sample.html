@@ -20,45 +20,60 @@
 <body>
  <div class="blog-container">
 
-        <div class="blog-activities">
+        <div class="blog-activities-1">
             <p class="heading">My Blog Application</p>
         </div>
 
         <div class="blog-activities">
-            <form>
-                <input type="text" th:name="'searchData'" class="input-field"/>
-                <input type="submit" style="display: none;"/>
-            </form>
-            <a th:href="'#'">Login</a>
-            <div>
-                <form id="filterForm">
-                    <select name="filterBy" class="dropdown-field" id="filterBy">
-                        <option value="author">Author</option>
-                        <option value="tag">Tag</option>
-                        <option value="title">Title</option>
-                        <option value="date">Date</option>
-                    </select>
+            <a th:href="'#'" th:class="'login-class'">Login</a>
+            <section>
+                <form id="search-input">
+                    <input type="text" th:name="'searchData'" class="input-field"/>
                     <input type="submit" style="display: none;"/>
                 </form>
+                <form id="pageForm" action="#" method="get">
+                    <select name="pageCount" class="dropdown-field" id="pageCount">
+                        <option value="none" selected disabled hidden>Blogs per page</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                    </select>
+                </form>
+            </section>
 
+            <div>
                 <form id="sortForm" action="#" method="get">
                     <select name="sortBy" class="dropdown-field" id="sortBy">
+                        <option value="none" selected disabled hidden>Sort By </option>
                         <option value="createdFirst">Created First</option>
                         <option value="createdLast">Created Last</option>
                         <option value="author">Author(A-Z)</option>
                         <option value="title">Title(A-Z)</option>
                     </select>
                 </form>
+
+                <form id="filterForm">
+                    <select name="filterBy" class="dropdown-field" id="filterBy">
+                        <option value="none" selected disabled hidden>Filter By </option>
+                        <option value="author">Author</option>
+                        <option value="tag">Tag</option>
+                        <option value="title">Title</option>
+                        <option value="date">Date</option>
+                    </select>
+                    <!--                    <input type="text"/>-->
+                    <input type="submit" style="display: none;"/>
+                </form>
             </div>
 
         </div>
 
         <div th:each="post: ${posts_list}" th:class="'blog-data'">
-            <p th:text="*{post.postTitle}"></p>
+            <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
 <!--            <p th:text="*{post.tags}"></p>-->
-            <p th:text="*{post.author}"></p>
-            <p th:text="*{post.postCreateTime}"></p>
-            <p th:text="*{post.postContent}"></p>
+            <span th:text="*{post.author}" th:class="'post-author'"></span>
+            <span th:text="*{post.postCreateTime.toLocaleString()}" ></span>
+            <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
         </div>
     </div>
 </body>

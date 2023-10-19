@@ -9,7 +9,7 @@
         <h2 th:text="*{postTitle}"></h2>
         <p th:text="*{postContent}"></p>
     </div>
-    <form method="post" th:action="@{'/posts/addcomment/' + ${single_post.id}}">
+    <form method="post" th:action="@{'/addcomment/' + ${single_post.id}}">
         Name: <input type="text" name="user_name">
         <br/> <br/>
         Email: <input type="email" name="user_email">

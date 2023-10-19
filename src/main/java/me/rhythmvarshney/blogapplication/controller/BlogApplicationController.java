@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.repositories.PostRepository;
+import me.rhythmvarshney.blogapplication.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.time.LocalDateTime;
 
 @Controller
 public class BlogApplicationController {
@@ -21,6 +23,8 @@ public class BlogApplicationController {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    PostService postService;
     @PutMapping("/fillData")
     public void test() throws IOException {
         for(int i = 1; i <= 10; i++){
@@ -37,11 +41,11 @@ public class BlogApplicationController {
         }
     }
 
-    @GetMapping("/")
-    public String homepage(Model model){
-        model.addAttribute("posts_list", postRepository.findAll());
-        return "homepage";
-    }
+//    @GetMapping("/")
+//    public String homepage(Model model){
+//        model.addAttribute("posts_list", postService.findAll());
+//        return "homepage";
+//    }
 
     @GetMapping("/sample")
     public String test1(Model model){
