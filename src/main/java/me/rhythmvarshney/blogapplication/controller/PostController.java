@@ -6,10 +6,12 @@ import me.rhythmvarshney.blogapplication.entity.Tag;
 import me.rhythmvarshney.blogapplication.service.PostService;
 import me.rhythmvarshney.blogapplication.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +31,17 @@ public class PostController {
 
     @GetMapping("/")
     public String homepage(@RequestParam Map<String,String> params, Model model){
-        List<Post> posts = postService.findAllByParams(params);
-        model.addAttribute("posts_list", posts);
+        Page<Post> posts = postService.findAllByParams(params);
+
+
+        model.addAttribute("posts_list", posts.getContent());
+        model.addAttribute("previous_page",posts.getNumber() - 1);
+        model.addAttribute("next_page", posts.getNumber() + 1);
+        model.addAttribute("total_pages",posts.getTotalPages());
+        model.addAttribute("limit",posts.getSize());
+        if(params.containsKey("search")){
+            model.addAttribute("search_pagination", params.get("search"));
+        }
         return "homepage";
     }
     @GetMapping("/createPost")
@@ -66,7 +77,6 @@ public class PostController {
 
     @GetMapping("/edit/{postId}")
     public String editForm(@PathVariable int postId, Model model){
-//        postService.deleteById(postId);
         Post post = postService.findById(postId);
         model.addAttribute("post_data",post);
         return "edit-post";
@@ -75,18 +85,19 @@ public class PostController {
     @PostMapping("/edit")
     public String editPostById(
             @RequestParam("title") String title,
-            @RequestParam("excerpt") String excerpt,
+            @RequestParam("tags") String tags,
             @RequestParam("content") String content,
             @RequestParam("postId") int postId
     ){
-        Post post = postService.findById(postId);
-        post.setPostTitle(title);
-        post.setExcerpt(excerpt);
-        post.setPostContent(content);
-
+        Post post = postService.editPost(title,content,postId);
+        String[] tagList = tags.split(",");
+        for(String tag: tagList){
+            Tag tagName = tagService.findTagByName(tag);
+            post.addTag(tagName);
+        }
         postService.save(post);
 
-        return "redirect:/posts/" + postId;
+        return "redirect:/" + postId;
     }
 
     @GetMapping("/delete/{postId}")

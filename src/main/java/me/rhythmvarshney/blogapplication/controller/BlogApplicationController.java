@@ -27,7 +27,7 @@ public class BlogApplicationController {
     PostService postService;
     @PutMapping("/fillData")
     public void test() throws IOException {
-        for(int i = 1; i <= 10; i++){
+        for(int i = 1; i <= 50; i++){
             URL url = new URL("https://api.api-ninjas.com/v1/loremipsum?paragraphs=8");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("accept", "application/json");

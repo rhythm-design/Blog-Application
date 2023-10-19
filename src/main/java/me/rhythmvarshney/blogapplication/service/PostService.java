@@ -1,14 +1,12 @@
 package me.rhythmvarshney.blogapplication.service;
 
 import me.rhythmvarshney.blogapplication.entity.Post;
+import me.rhythmvarshney.blogapplication.entity.Tag;
 import me.rhythmvarshney.blogapplication.repositories.PostRepository;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -38,46 +36,64 @@ public class PostService {
         System.out.println("Secessfully saved the post");
     }
 
-    private List<Post> findAllOrderByPublishTimeAsc(){
-        return postRepository.findAll(Sort.by(Sort.Direction.ASC,"publishTime"));
+    private Page<Post> findAllOrderByPublishTimeAsc(){
+        PageRequest pageRequest = PageRequest.of(0,6,Sort.Direction.DESC,"publishTime");
+        Page post = postRepository.findAll(pageRequest);
+        return post;
     }
 
-    private List<Post> findAllOrderByPublishTimeDesc(){
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC,"publishTime"));
+    private Page<Post> findAllOrderByPublishTimeDesc(){
+        PageRequest pageRequest = PageRequest.of(0,6,Sort.Direction.DESC,"publishTime");
+        Page post = postRepository.findAll(pageRequest);
+        return post;
     }
 
-    public List<Post> findAll(){
-        return postRepository.findAll();
+    public Page<Post> findAll(int pageNumber, int pageSize){
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return postRepository.findAll(pageRequest);
     }
 
-    private List<Post> findAllOrderByAuthorAsc(){
-        return postRepository.findAll(Sort.by(Sort.Direction.ASC,"author"));
+    private Page<Post> findAllOrderByAuthorAsc(int pageSize){
+        PageRequest pageRequest = PageRequest.of(0,6,Sort.Direction.ASC,"author");
+        Page post = postRepository.findAll(pageRequest);
+        return post;
     }
 
-    private List<Post> findAllOrderByAuthorDesc(){
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC,"author"));
+    private Page<Post> findAllOrderByAuthorDesc(){
+        PageRequest pageRequest = PageRequest.of(0,6,Sort.Direction.DESC,"author");
+        Page post = postRepository.findAll(pageRequest);
+        return post;
     }
 
-    private List<Post> findAllOrderByTitleAsc(){
-        return postRepository.findAll(Sort.by(Sort.Direction.ASC,"postTitle"));
+    private Page<Post> findAllOrderByTitleAsc(){
+        PageRequest pageRequest = PageRequest.of(0,6,Sort.Direction.DESC,"postTitle");
+        Page post = postRepository.findAll(pageRequest);
+        return post;
     }
 
-    public List<Post> findAllByParams(Map<String,String> params){
+    public Page<Post> findAllByParams(Map<String,String> params){
 
-        List<Post> posts;
-        // Handles sortField param
+        Page<Post> posts;
+        // Handles sortField param Exception handling
         String sortField = params.getOrDefault("sortField",null);
         String sortOrder = params.getOrDefault("order",null);
-        if(sortField != null){
-            posts = findSortedPostByField(sortField, sortOrder);
+        String pageNumber = params.getOrDefault("start","0");
+        String countLimit = params.getOrDefault("limit","6");
+
+        // Handles Search Input for keywords
+        String searchKeywords = params.getOrDefault("search",null);
+        if(searchKeywords !=null){
+            posts = searchKeywordsInPost(searchKeywords, Integer.parseInt(pageNumber), Integer.parseInt(countLimit));
+        }else if(sortField != null){
+            posts = findSortedPostByField(sortField, sortOrder, countLimit);
         }else{
-            posts = findAll();
+            posts = findAll(Integer.parseInt(pageNumber), Integer.parseInt(countLimit));
         }
         return posts;
     }
 
-    private List<Post> findSortedPostByField(String sortField, String sortOrder){
-        List<Post> post;
+    private Page<Post> findSortedPostByField(String sortField, String sortOrder, String countLimit){
+        Page<Post> post;
         if(sortField.equals("publishedAt")){
             // Sort by time
             if(sortOrder.equals("asc")){
@@ -88,7 +104,7 @@ public class PostService {
         }else if(sortField.equals("author")){
             //Sort by author
             if(sortOrder.equals("asc")){
-                post = findAllOrderByAuthorAsc();
+                post = findAllOrderByAuthorAsc(Integer.parseInt(countLimit));
             }else{
                 post = findAllOrderByAuthorDesc();
             }
@@ -96,6 +112,31 @@ public class PostService {
             //title sorted
             post = findAllOrderByTitleAsc();
         }
+        return post;
+    }
+
+    private Page<Post> searchKeywordsInPost(String keywords, int pageNumber, int limit) {
+        String[] keywordsList = keywords.split(" ");
+        Set<Post> searchSet = new HashSet<>();
+
+        for (String keyword : keywordsList) {
+            Set<Post> single = postRepository.findByKeyword(keyword);
+            searchSet.addAll(single);
+        }
+
+        int start = pageNumber * limit;
+        int end = Math.min(start + limit, searchSet.size());
+
+        List<Post> pagedData = new ArrayList<>(searchSet).subList(start, end);
+
+        return new PageImpl<>(pagedData, PageRequest.of(pageNumber, limit), searchSet.size());
+    }
+
+    public Post editPost(String title, String content, int postId){
+        Post post = findById(postId);
+        post.setPostTitle(title);
+        post.setTags(new HashSet<>());
+        post.setPostContent(content);
         return post;
     }
 }

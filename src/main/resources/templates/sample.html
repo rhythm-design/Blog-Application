@@ -2,79 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sample</title>
+    <title>Edit Post</title>
     <link rel="stylesheet" th:href="@{/css/sample.css}">
-    <script>
-        // Get a reference to the select element
-        var filterSelect = document.getElementById('sortBy');
-
-        // Add an event listener to the select element
-        filterSelect.addEventListener('change', function() {
-            // Get the form element
-            var form = document.getElementById('sortForm');
-            // Submit the form
-            form.submit();
-        });
-    </script>
 </head>
 <body>
- <div class="blog-container">
-
-        <div class="blog-activities-1">
-            <p class="heading">My Blog Application</p>
-        </div>
-
-        <div class="blog-activities">
-            <a th:href="'#'" th:class="'login-class'">Login</a>
-            <section>
-                <form id="search-input">
-                    <input type="text" th:name="'searchData'" class="input-field"/>
-                    <input type="submit" style="display: none;"/>
-                </form>
-                <form id="pageForm" action="#" method="get">
-                    <select name="pageCount" class="dropdown-field" id="pageCount">
-                        <option value="none" selected disabled hidden>Blogs per page</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                        <option value="40">40</option>
-                    </select>
-                </form>
-            </section>
-
-            <div>
-                <form id="sortForm" action="#" method="get">
-                    <select name="sortBy" class="dropdown-field" id="sortBy">
-                        <option value="none" selected disabled hidden>Sort By </option>
-                        <option value="createdFirst">Created First</option>
-                        <option value="createdLast">Created Last</option>
-                        <option value="author">Author(A-Z)</option>
-                        <option value="title">Title(A-Z)</option>
-                    </select>
-                </form>
-
-                <form id="filterForm">
-                    <select name="filterBy" class="dropdown-field" id="filterBy">
-                        <option value="none" selected disabled hidden>Filter By </option>
-                        <option value="author">Author</option>
-                        <option value="tag">Tag</option>
-                        <option value="title">Title</option>
-                        <option value="date">Date</option>
-                    </select>
-                    <!--                    <input type="text"/>-->
-                    <input type="submit" style="display: none;"/>
-                </form>
-            </div>
-
-        </div>
-
-        <div th:each="post: ${posts_list}" th:class="'blog-data'">
-            <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
-<!--            <p th:text="*{post.tags}"></p>-->
-            <span th:text="*{post.author}" th:class="'post-author'"></span>
-            <span th:text="*{post.postCreateTime.toLocaleString()}" ></span>
-            <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
-        </div>
+    <div class="title-div">
+        <p class="page-title">Edit Post</p>
     </div>
+
+    <form th:method="post" th:action="'/posts/edit'" th:object="${post_data}">
+        <input type="text" name="title" placeholder="Title" class="input-field">
+        <br/> <br/>
+        <input type="text" name="excerpt" placeholder="Tags(Comma Seperated)" class="input-field">
+        <br/> <br/>
+        <textarea style="width: 50%; height: 100px" name="content" placeholder="Content" class="input-textArea"></textarea>
+        <br/> <br/>
+        <input type="hidden" name="postId">
+        <div class="submit-div">
+            <input type="submit" value="Publish" class="submit-btn"/>
+        </div>
+    </form>
 </body>
 </html>
