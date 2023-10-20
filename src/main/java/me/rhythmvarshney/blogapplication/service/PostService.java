@@ -122,7 +122,7 @@ public class PostService {
 
     private Page<Post> searchKeywordsInPost(String keywords, int pageNumber, int limit) {
         String[] keywordsList = keywords.split(" ");
-        Set<Post> searchSet = new HashSet<>();
+        Set<Post> searchSet = new TreeSet<>((a,b)->b.getId() - a.getId());
 
         for (String keyword : keywordsList) {
             Set<Post> single = postRepository.findByKeyword(keyword);

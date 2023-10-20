@@ -6,7 +6,6 @@ import me.rhythmvarshney.blogapplication.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +29,12 @@ public class QueryController {
 
 
     @GetMapping("/filter")
-    public String filtering(@RequestParam Map<String,String> map, Model model){
-        Specification<Post> postSpecification = filteringService.getSearchSpecification(map);
+    public String filtering(@RequestParam Map<String,String> map, Model model, @RequestParam(required = false) String tags){
+
+        Specification<Post> postSpecification = filteringService.searchByMultipleCriteria(map);
         PageRequest pageRequest = PageRequest.of(0,6);
         Page<Post> post = postService.findAll(postSpecification, pageRequest);
+//        System.out.println("Content: " + post1.getContent());
         model.addAttribute("posts_list",post.getContent());
         return "homepage";
     }

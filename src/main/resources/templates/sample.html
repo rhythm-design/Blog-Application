@@ -2,54 +2,102 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Post</title>
+    <title>Sample</title>
     <link rel="stylesheet" th:href="@{/css/sample.css}">
 </head>
 <body>
-    <div >
-    <nav>
-        <a th:href="@{'/'}">My Blog Application</a>
-        <p>Login</p>
-    </nav>
-
-        <div class="blog-area" th:object="${single_post}">
-            <p th:text="*{postTitle}" class="blog-title"></p>
-            <p th:text="*{author}" class="blog-author"></p>
-            <p th:text="*{publishTime}" class="blog-time"></p>
-            <div>
-                <strong>Excerpt-</strong><p th:text="*{excerpt}" class="blog-excerpt"></p>
-                <p th:text="*{postContent}" class="blog-content"></p>
-            </div>
-        </div>
-
-        <div class="comment-form">
-            <p class="comment-title">Leave a Comment</p>
-            <form method="post" th:action="@{'/addcomment/' + ${single_post.id}}">
-                <input type="text" name="user_name" class="input-field" placeholder="Name">
-                <br/> <br/>
-                <input type="email" name="user_email" class="input-field" placeholder="Email">
-                <br/> <br/>
-                <textarea style="width: 50%; height: 100px" name="user_comment" placeholder="Comment" class="comment-textfield"></textarea>
-                <br/> <br/>
-                <div class="submit-div">
-                    <input type="submit" value="Add Comment" class="submit-btn"/>
-                </div>
+<div class="blog-container">
+    <div class="blog-activities-1">
+        <p class="heading">My Blog Application</p>
+    </div>
+    <div class="blog-activities">
+        <a th:href="'#'" th:class="'login-class'">Login</a>
+        <section>
+            <form id="search-input" th:type="'get'">
+                <input type="text" th:name="'search'" class="input-field" placeholder="Search"/>
+                <input type="submit" style="display: none;"/>
             </form>
-        </div>
-        <div class="all-comments">
-            <div th:each="comment : ${post_comments}" class="comment-container">
-                <p th:text="*{comment.name}" class="commentor-name"></p>
-                <p th:text="*{comment.email}" class="commentor-email"></p>
-                <p th:text="*{comment.comment}" class="commentor-comment"></p>
 
-                <a th:href="@{'/comment/delete-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Delete</button></a>
-                <a th:href="@{'/comment/update-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Update</button></a>
+            <div class="dropdown" id="page-count-dropdown">
+                <div class="dropdown-title">Page Count</div>
+                <div class="dropdown-content">
+                    <a th:href="@{'/?start=0&limit=6'}" class="content-option">Default</a>
+                    <a th:href="@{'/?start=0&limit=10'}" class="content-option">10</a>
+                    <a th:href="@{'/?start=0&limit=20'}" class="content-option">20</a>
+                    <a th:href="@{'/?start=0&limit=30'}" class="content-option">30</a>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section>
+            <div class="dropdown" id="sorting-dropdown">
+                <div class="dropdown-title">Sort By</div>
+                <div class="dropdown-content">
+                    <a th:href="@{'/?sortField=publishedAt&order=asc'}" class="content-option">New First</a>
+                    <a th:href="@{'/?sortField=publishedAt&order=desc'}" class="content-option">Old First</a>
+                    <a th:href="@{'/?sortField=author&order=asc'}" class="content-option">Author(A-Z)</a>
+                    <a th:href="@{'/?sortField=author&order=desc'}" class="content-option">Author(Z-A)</a>
+                    <a th:href="@{'/?sortField=title&order=asc'}" class="content-option">Title(A-Z)</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="false-input">
+                <select>
+                    <option label="Us" />
+                    <option label="Mx" />
+                    <option label="Cn" />
+                </select>
+                <div class="divider"></div>
+                <input type="text" placeholder="Phone Number" >
+            </div>
+        </section>
+
     </div>
 
-    <footer>
+    <div th:each="post: ${posts_list}" class="blog-data">
+        <a th:href="@{'/' + ${post.id}}">
+            <div>
+                <div th:each="tag: *{post.tags}" th:limit="1">
+                    <p th:text="*{tag.name}" class="post-tags"></p>
+                </div>
+                <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
+            </div>
+            <!-- <p th:text="*{post.tags}"></p> -->
+            <span th:text="*{post.author}" th:class="'post-author'"></span>
+            <span th:text="*{post.postCreateTime.toLocaleString()}"></span>
+            <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
+            <span class="link"></span>
+        </a>
+        <!--            <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>-->
+        <!--            <a th:href="@{'/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>-->
+    </div>
+</div>
 
-    </footer>
+<footer>
+
+    <div th:if="${previous_page >= 0}" th:unless="${search_pagination != null}">
+        <a th:href="@{'/?start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link"><< Prev</a>
+    </div>
+    <div th:if="${search_pagination != null && previous_page >= 0}">
+        <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link" th:text="'<<Previous Search Page'"></a>
+    </div>
+
+    <div th:if="${next_page < total_pages}" th:unless="${search_pagination != null}">
+        <a th:href="@{'/?start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next>></a>
+    </div>
+
+    <div th:if="${search_pagination != null && next_page < total_pages}">
+        <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next Search Page>></a>
+    </div>
+</footer>
+
+<a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
+
+<div class="input-container">
+    <label class="input-label" for="exampleInput">AUTHOR</label>
+    <input class="input-box" type="text" id="exampleInput" placeholder="Enter your input">
+</div>
 </body>
 </html>
