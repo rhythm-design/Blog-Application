@@ -10,10 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 
 @Controller
@@ -32,7 +30,6 @@ public class PostController {
     @GetMapping("/")
     public String homepage(@RequestParam Map<String,String> params, Model model){
         Page<Post> posts = postService.findAllByParams(params);
-
 
         model.addAttribute("posts_list", posts.getContent());
         model.addAttribute("previous_page",posts.getNumber() - 1);
@@ -127,7 +124,7 @@ public class PostController {
         postService.save(post);
 
         //redirect to post again
-        return "redirect:/posts/" + postId;
+        return "redirect:/" + postId;
     }
 
 }

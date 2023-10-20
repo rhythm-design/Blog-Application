@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Post</title>
+    <link rel="stylesheet" th:href="@{/css/edit-post.css}">
 </head>
 <body>
+<div class="title-div">
+    <p class="page-title">Create Post</p>
+</div>
 
-    <form th:method="post" th:action="'/createPost'">
-        Title: <input type="text" name="title">
-        <br/> <br/>
-        Excerpt: <input type="text" name="excerpt">
-        <br/> <br/>
-        Content: <textarea style="width: 50%; height: 100px" name="content"></textarea>
-        <br/> <br/>
-        Tags: <input type="text" name="tags" placeholder="Comma Seperated Tags, max 3">
-        <input type="hidden" name="isPublished" value="true" />
-        <input type="submit" />
-    </form>
+<form th:method="post" th:action="'/createPost'">
+    <input type="text" name="title" placeholder="Title" class="input-field">
 
+    <input type="text" name="excerpt" placeholder="Excerpt" class="input-field">
+
+    <input type="text" name="tags" placeholder="Tags(Comma Seperated)" class="input-field">
+
+    <textarea name="content" placeholder="Content" class="input-textArea"></textarea>
+
+    <input type="hidden" name="isPublished" value="true" />
+    <br/> <br/>
+    <div class="submit-div">
+        <input type="submit" value="Publish" class="submit-btn"/>
+    </div>
+</form>
 </body>
 </html>

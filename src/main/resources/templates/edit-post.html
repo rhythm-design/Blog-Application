@@ -15,7 +15,7 @@
     <br/> <br/>
     <input type="text" name="tags" placeholder="Tags(Comma Seperated)" class="input-field" th:value="*{#strings.arrayJoin(tags,',')}">
     <br/> <br/>
-    <textarea style="width: 50%; height: 100px" name="content" placeholder="Content" class="input-textArea" th:text="*{postContent}"></textarea>
+    <textarea name="content" placeholder="Content" class="input-textArea" th:text="*{postContent}"></textarea>
     <br/> <br/>
     <input type="hidden" name="postId" th:value="*{id}">
     <div class="submit-div">

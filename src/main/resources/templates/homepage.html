@@ -6,7 +6,6 @@
     <link rel="stylesheet" th:href="@{/css/homepage.css}">
 </head>
 <body>
-    <a th:href="'/createPost'"><button type="submit" class="crete-btn">Create Post</button></a>
     <div class="blog-container">
         <div class="blog-activities-1">
             <p class="heading">My Blog Application</p>
@@ -15,7 +14,7 @@
             <a th:href="'#'" th:class="'login-class'">Login</a>
             <section>
                 <form id="search-input" th:type="'get'">
-                    <input type="text" th:name="'search'" class="input-field"/>
+                    <input type="text" th:name="'search'" class="input-field" placeholder="Search"/>
                     <input type="submit" style="display: none;"/>
                 </form>
 
@@ -48,7 +47,7 @@
         <div th:each="post: ${posts_list}" class="blog-data">
             <a th:href="@{'/' + ${post.id}}">
                 <div>
-                    <div th:each="tag: *{post.tags}">
+                    <div th:each="tag: *{post.tags}" th:limit="1">
                         <p th:text="*{tag.name}" class="post-tags"></p>
                     </div>
                     <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
@@ -59,8 +58,8 @@
                 <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
                 <span class="link"></span>
             </a>
-            <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>
-            <a th:href="@{'/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>
+<!--            <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>-->
+<!--            <a th:href="@{'/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>-->
         </div>
     </div>
 
@@ -81,5 +80,8 @@
             <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next Search Page>></a>
         </div>
     </footer>
+
+    <a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
+
 </body>
 </html>

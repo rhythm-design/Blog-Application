@@ -4,6 +4,7 @@ import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
 import me.rhythmvarshney.blogapplication.repositories.PostRepository;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,6 +25,10 @@ public class PostService {
             throw new RuntimeException("Post not found by id: " + id);
         }
         return postOptional.get();
+    }
+
+    public Page<Post> findAll(Specification<Post> specification, Pageable page){
+        return postRepository.findAll(specification,page);
     }
 
     public void deleteById(int id){

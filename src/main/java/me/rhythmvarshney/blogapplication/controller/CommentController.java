@@ -34,13 +34,13 @@ public class CommentController {
         Comment oldComment = commentService.findById(commentId);
         oldComment.setComment(comment);
         commentService.save(oldComment);
-        return "redirect:/posts/" + postId;
+        return "redirect:/" + postId;
     }
 
     @GetMapping("/delete-comment/{commentId}/{postId}")
     public String deleteComment(@PathVariable int commentId, @PathVariable int postId){
         commentService.deleteById(commentId);
-        return "redirect:/posts/" + postId;
+        return "redirect:/" + postId;
     }
 
 }

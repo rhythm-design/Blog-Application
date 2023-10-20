@@ -82,6 +82,15 @@ public class Post {
         return "Post{" +
                 "id=" + id +
                 ", postTitle='" + postTitle + '\'' +
+                ", excerpt='" + excerpt + '\'' +
+                ", postContent='" + postContent + '\'' +
+                ", author='" + author + '\'' +
+                ", publishTime=" + publishTime +
+                ", isPublished=" + isPublished +
+                ", postCreateTime=" + postCreateTime +
+                ", updateTime=" + updateTime +
+                ", comments=" + comments +
+                ", tags=" + tags +
                 '}';
     }
 }

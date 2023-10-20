@@ -2,25 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Post</title>
+    <title>Create Post</title>
     <link rel="stylesheet" th:href="@{/css/sample.css}">
 </head>
 <body>
-    <div class="title-div">
-        <p class="page-title">Edit Post</p>
+    <div >
+    <nav>
+        <a th:href="@{'/'}">My Blog Application</a>
+        <p>Login</p>
+    </nav>
+
+        <div class="blog-area" th:object="${single_post}">
+            <p th:text="*{postTitle}" class="blog-title"></p>
+            <p th:text="*{author}" class="blog-author"></p>
+            <p th:text="*{publishTime}" class="blog-time"></p>
+            <div>
+                <strong>Excerpt-</strong><p th:text="*{excerpt}" class="blog-excerpt"></p>
+                <p th:text="*{postContent}" class="blog-content"></p>
+            </div>
+        </div>
+
+        <div class="comment-form">
+            <p class="comment-title">Leave a Comment</p>
+            <form method="post" th:action="@{'/addcomment/' + ${single_post.id}}">
+                <input type="text" name="user_name" class="input-field" placeholder="Name">
+                <br/> <br/>
+                <input type="email" name="user_email" class="input-field" placeholder="Email">
+                <br/> <br/>
+                <textarea style="width: 50%; height: 100px" name="user_comment" placeholder="Comment" class="comment-textfield"></textarea>
+                <br/> <br/>
+                <div class="submit-div">
+                    <input type="submit" value="Add Comment" class="submit-btn"/>
+                </div>
+            </form>
+        </div>
+        <div class="all-comments">
+            <div th:each="comment : ${post_comments}" class="comment-container">
+                <p th:text="*{comment.name}" class="commentor-name"></p>
+                <p th:text="*{comment.email}" class="commentor-email"></p>
+                <p th:text="*{comment.comment}" class="commentor-comment"></p>
+
+                <a th:href="@{'/comment/delete-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Delete</button></a>
+                <a th:href="@{'/comment/update-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Update</button></a>
+            </div>
+        </div>
     </div>
 
-    <form th:method="post" th:action="'/posts/edit'" th:object="${post_data}">
-        <input type="text" name="title" placeholder="Title" class="input-field">
-        <br/> <br/>
-        <input type="text" name="excerpt" placeholder="Tags(Comma Seperated)" class="input-field">
-        <br/> <br/>
-        <textarea style="width: 50%; height: 100px" name="content" placeholder="Content" class="input-textArea"></textarea>
-        <br/> <br/>
-        <input type="hidden" name="postId">
-        <div class="submit-div">
-            <input type="submit" value="Publish" class="submit-btn"/>
-        </div>
-    </form>
+    <footer>
+
+    </footer>
 </body>
 </html>
