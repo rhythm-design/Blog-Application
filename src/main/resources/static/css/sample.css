@@ -20,13 +20,6 @@ body{
     grid-gap: 20px;
 }
 
-
-.blog-activities{
-    height: 150px;
-    text-align: center;
-    display: block;
-}
-
 #pageForm, #search-input, #sortForm, #filterForm{
     display: inline;
 }
@@ -169,30 +162,69 @@ footer {
 /*    padding-right: 20px;*/
 /*}*/
 
-.false-input{
+/*.grid-container {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(2, 1fr); !* Example: Two columns *!*/
+/*    gap: 20px; !* Adjust the gap as needed *!*/
+/*    !* Add other grid properties as required *!*/
+/*}*/
+
+.false-input {
     display: flex;
     border: solid 3px #38546d;
-    width: fit-content;
     border-radius: 10px;
-    position: absolute;
-    left: 40%;
-    top: 45%;
+    /*width: 50%;*/
 }
-select, input {
+
+.false-input div{
+    margin-right: 30px;
+}
+
+input,button {
     height: auto;
     border-style: none;
     outline: none;
     border-radius: 10px;
     margin: 10px;
+    /*border: 2px solid red;*/
 }
 
+select {
+    height: auto;
+    border-style: none;
+    outline: none;
+    border-radius: 4px;
+    margin: 5px;
+    width: 150px;
+    padding: 6px;
+}
 
+.submit-btn{
+    border: 2px solid black;
+    padding:5px 15px;
+    background:#fff;
+    cursor:pointer;
+    height: 30px;
+    width: 100px;
+}
 
-.divider {
-    border-left:1px solid #38546d;
-    border-right:1px solid #16222c;
-    height: 90%;
-    position:absolute;
-    left: 60px;
-    top: 5%;
+.blog-activities{
+    height: 180px;
+    display: block;
+    border: 2px solid red;
+    padding: 10px;
+}
+
+.login-search-myposts{
+    display: inline;
+    /*border: 2px solid red;*/
+}
+
+.profile-actions{
+    float: right;
+    font-size: 20px;
+}
+
+.profile-actions a:nth-child(1){
+    margin-right: 100px;
 }
