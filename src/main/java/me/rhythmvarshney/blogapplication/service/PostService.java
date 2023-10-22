@@ -144,4 +144,8 @@ public class PostService {
         post.setPostContent(content);
         return post;
     }
+
+    public List<String> getAllAuthors(){
+        return postRepository.findAllAuthors();
+    }
 }

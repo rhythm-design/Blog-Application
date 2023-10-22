@@ -1,12 +1,17 @@
 package me.rhythmvarshney.blogapplication.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me.rhythmvarshney.blogapplication.entity.Comment;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
+import me.rhythmvarshney.blogapplication.service.MergeFilterService;
 import me.rhythmvarshney.blogapplication.service.PostService;
 import me.rhythmvarshney.blogapplication.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,24 +26,71 @@ public class PostController {
 
     private TagService tagService;
 
+    private MergeFilterService<Post,Tag> mergeFilterService;
+
     @Autowired
-    public PostController(PostService postService, TagService tagService) {
+    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> mergeFilterService) {
         this.postService = postService;
         this.tagService = tagService;
+        this.mergeFilterService = mergeFilterService;
     }
 
     @GetMapping("/")
-    public String homepage(@RequestParam Map<String,String> params, Model model){
-        Page<Post> posts = postService.findAllByParams(params);
+    public String homepage(Model model,
+                            @RequestParam(value = "tag", required = false) List<String> passedTagList,
+                            @RequestParam(value = "author", required = false) List<String> authorList,
+                            @RequestParam(value = "order", required = false) String sortOrder,
+                            @RequestParam(value = "search", required = false) String searchedText,
+                            @RequestParam(value = "start", required = false) String start,
+                            @RequestParam(value = "limit", required = false) String limit,
+                            HttpServletRequest request
+    ){
+        List<Tag> availableTags = tagService.findAll();
+        List<String> availableAuthorList = postService.getAllAuthors();
 
+        String passedUrl = request.getQueryString();
+
+        String url = request.getQueryString() != null ?
+                passedUrl.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&")
+                        .replaceAll("&limit=\\d+", "").replaceAll("\\&+", "&")
+                :"";
+
+        if(url != null){
+            String updatedUrl = url.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&");
+//            String updatedUrl = url.replaceAll("start=\\d+", "");
+            System.out.println("Start replacer: " + updatedUrl);
+            System.out.println("Start Replacer: " + url.replaceAll("start.?&",""));
+        }else{
+            url = "";
+        }
+
+//        String url=request.getQueryString()!=null?
+//                "&"+request.getQueryString().replaceAll("limit.?&","").replaceAll("start.?&",""):
+//                "";
+
+        Specification<Post> postSpecification = mergeFilterService.searchInAllFields(
+                passedTagList,
+                Post.class.getDeclaredFields(),
+                searchedText,
+                "",
+                ""
+        );
+
+
+        int startPage = start == null ? Integer.parseInt("0"): Integer.parseInt(start);
+        int blogCount = limit == null ? Integer.parseInt("6"): Integer.parseInt(limit);
+        PageRequest pageRequest = PageRequest.of(startPage,blogCount);
+
+        Page<Post> posts = postService.findAll(postSpecification,pageRequest);
         model.addAttribute("posts_list", posts.getContent());
+        model.addAttribute("tags_list",availableTags);
+        model.addAttribute("authors_list",availableAuthorList);
         model.addAttribute("previous_page",posts.getNumber() - 1);
         model.addAttribute("next_page", posts.getNumber() + 1);
         model.addAttribute("total_pages",posts.getTotalPages());
         model.addAttribute("limit",posts.getSize());
-        if(params.containsKey("search")){
-            model.addAttribute("search_pagination", params.get("search"));
-        }
+
+        model.addAttribute("url_string", url);
         return "homepage";
     }
     @GetMapping("/createPost")
@@ -59,7 +111,7 @@ public class PostController {
             post.addTag(tempTag);
         }
         postService.save(post);
-        tagService.test("java");
+//        tagService.test("java");
         return "redirect:/";
     }
 

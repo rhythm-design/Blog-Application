@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Sample</title>
     <link rel="stylesheet" th:href="@{/css/sample.css}">
+    <script th:src="@{/js/multiselect-dropdown.js}"></script>
 </head>
 <body>
 <div class="blog-container">
@@ -12,10 +13,6 @@
     </div>
     <div class="blog-activities">
         <div class="login-search-myposts">
-            <form th:type="'get'"class="search-form" style="display: inline">
-                <input type="text" name="search" placeholder="Search" style="display: inline" class="input-field"/>
-                <input type="submit" style="display: none;"/>
-            </form>
             <div class="profile-actions">
                 <a href="#">My Posts</a>
                 <a th:href="'#'">Login</a>
@@ -23,22 +20,39 @@
         </div>
 
         <section>
-            <form>
+            <form th:action="'/filter'">
                 <div class="grid-container">
                     <div class="false-input">
-                        <select id="dropdown" name="selected-dropdown-option">
-                            <option value="search" selected>Search</option>
-                            <option value="append-search" label="Append Search" />
-                            <option value="author" label="Filter Author" />
-                            <option value="tag" label="Filter Tag" />
+                        <select placeholder="Select Authors" name="author" id="author-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
+                            <option th:each="author: ${authors_list}" th:value="*{author}" th:text="*{author}"></option>
                         </select>
-                        <div style="border-right: 2px solid black; margin-right: 4px"></div>
-                        <input type="text" name="query-entered" style="width: 60%; margin-bottom: 7px; margin-top: 7px; padding-left: 8px" placeholder="Comma Seperated">
-                        <input type="submit" value="Search" class="submit-btn" style="display: inline">
-                        <button class="submit-btn" style="display: inline">Reset</button>
+
+                        <select placeholder="Select Tags" name="tag" id="tag-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
+                            <option th:each="tag: ${tags_list}" th:value="*{tag.name}" th:text="*{tag.name}"></option>
+                        </select>
+
+                        <select id="sorting" name="order">
+                            <option value="none" selected hidden disabled>Sorting</option>
+                            <option value="date-asc" label="New First" />
+                            <option value="date-desc" label="Old First" />
+                            <option value="title-asc" label="Title(A-Z)" />
+                            <option value="title-desc" label="Title(Z-A)" />
+                        </select>
                     </div>
+                    <div class="false-input">
+                        <input type="text" name="search" style="width: 60%; margin-bottom: 7px; margin-top: 7px; padding-left: 8px" placeholder="Comma Seperated">
+                        <input type="submit" value="Search" class="submit-btn" style="display: inline">
+                    </div>
+
                     <div>
                     </div>
+                </div>
+            </form>
+
+
+            <form th:action="'/filter'">
+                <div class="grid-container">
+
                 </div>
             </form>
         </section>
@@ -59,34 +73,21 @@
             <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
             <span class="link"></span>
         </a>
-        <!--            <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>-->
-        <!--            <a th:href="@{'/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>-->
     </div>
 </div>
 
 <footer>
 
-    <div th:if="${previous_page >= 0}" th:unless="${search_pagination != null}">
-        <a th:href="@{'/?start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link"><< Prev</a>
-    </div>
-    <div th:if="${search_pagination != null && previous_page >= 0}">
-        <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link" th:text="'<<Previous Search Page'"></a>
+    <div th:if="${previous_page >= 0}">
+        <a th:href="@{'/filter?' + ${url_string} + '&start='  + ${previous_page} + '&limit=' + ${limit}}" class="prev-link"> << Prev</a>
     </div>
 
-    <div th:if="${next_page < total_pages}" th:unless="${search_pagination != null}">
-        <a th:href="@{'/?start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next>></a>
+    <div th:if="${next_page < total_pages}">
+        <a th:href="@{'/filter?' + ${url_string} + '&start='  + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next>> </a>
     </div>
 
-    <div th:if="${search_pagination != null && next_page < total_pages}">
-        <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next Search Page>></a>
-    </div>
 </footer>
 
 <a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
-
-<div class="input-container">
-    <label class="input-label" for="exampleInput">AUTHOR</label>
-    <input class="input-box" type="text" id="exampleInput" placeholder="Enter your input">
-</div>
 </body>
 </html>

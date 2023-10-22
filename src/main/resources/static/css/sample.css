@@ -176,9 +176,9 @@ footer {
     /*width: 50%;*/
 }
 
-.false-input div{
-    margin-right: 30px;
-}
+/*.false-input div{*/
+/*    margin-right: 30px;*/
+/*}*/
 
 input,button {
     height: auto;
@@ -221,10 +221,15 @@ select {
 }
 
 .profile-actions{
-    float: right;
+    /*float: right;*/
     font-size: 20px;
+    margin-bottom: 30px;
 }
 
 .profile-actions a:nth-child(1){
     margin-right: 100px;
+}
+
+#tag-search{
+    margin-top: 5px;
 }

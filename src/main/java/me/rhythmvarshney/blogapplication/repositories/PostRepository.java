@@ -1,5 +1,6 @@
 package me.rhythmvarshney.blogapplication.repositories;
 
+import lombok.NonNull;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,8 @@ public interface PostRepository extends JpaRepository<Post,Integer>, JpaSpecific
     Set<Post> findByKeyword(@Param("keyword") String keyword);
 
     Post findByIsPublished(boolean isPublished);
+
+    @Query("SELECT DISTINCT p.author FROM Post p")
+    List<String> findAllAuthors();
+
 }

@@ -35,16 +35,14 @@ public interface MergeFilterService<T,V> {
     }
 
 
-     default Specification<T> collectionContain(String tags) {
+     default Specification<T> collectionContain(List<String> collectionList) {
         return (root, query, criteriaBuilder) -> {
-            if (tags == null || tags.isEmpty()) {
+            if (collectionList == null || collectionList.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
 
-            // space seperated tages to search
-            String tagList[] = tags.split(" ");
             List<Predicate> predicates = new ArrayList<>();
-            for(String tag: tagList){
+            for(String tag: collectionList){
                 // TODO: Hard coded modification
                 Join<V, T> tagJoin = root.join("tags");
                 Predicate like = criteriaBuilder.like(criteriaBuilder.lower(tagJoin.get(returnFieldNameForCollectionSearch())), "%"+tag.toLowerCase()+"%");
@@ -74,8 +72,8 @@ public interface MergeFilterService<T,V> {
         };
     }
 
-    default Specification<T> searchInAllFields(String spaceSeperatedTagList, Field[] fields, String searchText, String key, String value){
-        Specification<T> tagsSpecification = collectionContain(spaceSeperatedTagList);
+    default Specification<T> searchInAllFields(List<String> collectionList, Field[] fields, String searchText, String key, String value){
+        Specification<T> tagsSpecification = collectionContain(collectionList);
 
         Specification<T> textSearchSpecification = searchInStringFields(fields,searchText);
 

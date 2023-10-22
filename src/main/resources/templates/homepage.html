@@ -2,86 +2,92 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sample</title>
-    <link rel="stylesheet" th:href="@{/css/homepage.css}">
+    <title>Blog Application</title>
+    <link rel="stylesheet" th:href="@{/css/sample.css}">
+    <script th:src="@{/js/multiselect-dropdown.js}"></script>
 </head>
 <body>
-    <div class="blog-container">
-        <div class="blog-activities-1">
-            <p class="heading">My Blog Application</p>
-        </div>
-        <div class="blog-activities">
-            <a th:href="'#'" th:class="'login-class'">Login</a>
-            <section>
-                <form id="search-input" th:type="'get'">
-                    <input type="text" th:name="'search'" class="input-field" placeholder="Search"/>
-                    <input type="submit" style="display: none;"/>
-                </form>
-
-                <div class="dropdown" id="page-count-dropdown">
-                    <div class="dropdown-title">Page Count</div>
-                    <div class="dropdown-content">
-                        <a th:href="@{'/?start=0&limit=6'}" class="content-option">Default</a>
-                        <a th:href="@{'/?start=0&limit=10'}" class="content-option">10</a>
-                        <a th:href="@{'/?start=0&limit=20'}" class="content-option">20</a>
-                        <a th:href="@{'/?start=0&limit=30'}" class="content-option">30</a>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <div class="dropdown" id="sorting-dropdown">
-                    <div class="dropdown-title">Sort By</div>
-                    <div class="dropdown-content">
-                        <a th:href="@{'/?sortField=publishedAt&order=asc'}" class="content-option">New First</a>
-                        <a th:href="@{'/?sortField=publishedAt&order=desc'}" class="content-option">Old First</a>
-                        <a th:href="@{'/?sortField=author&order=asc'}" class="content-option">Author(A-Z)</a>
-                        <a th:href="@{'/?sortField=author&order=desc'}" class="content-option">Author(Z-A)</a>
-                        <a th:href="@{'/?sortField=title&order=asc'}" class="content-option">Title(A-Z)</a>
-                    </div>
-                </div>
-            </section>
-
+<div class="blog-container">
+    <div class="blog-activities">
+        <p class="heading">My Blog Application</p>
+    </div>
+    <div class="blog-activities">
+        <div class="login-search-myposts">
+            <div class="profile-actions">
+                <a href="#">My Posts</a>
+                <a th:href="'#'">Login</a>
+            </div>
         </div>
 
-        <div th:each="post: ${posts_list}" class="blog-data">
-            <a th:href="@{'/' + ${post.id}}">
-                <div>
-                    <div th:each="tag: *{post.tags}" th:limit="1">
-                        <p th:text="*{tag.name}" class="post-tags"></p>
+        <section>
+            <form th:action="'/'">
+                <div class="grid-container">
+                    <div class="false-input">
+                        <select placeholder="Select Authors" name="author" id="author-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
+                            <option th:each="author: ${authors_list}" th:value="*{author}" th:text="*{author}"></option>
+                        </select>
+
+                        <select placeholder="Select Tags" name="tag" id="tag-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
+                            <option th:each="tag: ${tags_list}" th:value="*{tag.name}" th:text="*{tag.name}"></option>
+                        </select>
+
+                        <select id="sorting" name="order">
+                            <option value="none" selected hidden disabled>Sorting</option>
+                            <option value="date-asc" label="New First" />
+                            <option value="date-desc" label="Old First" />
+                            <option value="title-asc" label="Title(A-Z)" />
+                            <option value="title-desc" label="Title(Z-A)" />
+                        </select>
                     </div>
-                    <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
+                    <div class="false-input">
+                        <input type="text" name="search" style="width: 60%; margin-bottom: 7px; margin-top: 7px; padding-left: 8px" placeholder="Comma Seperated">
+                        <input type="submit" value="Search" class="submit-btn" style="display: inline">
+                    </div>
+
+                    <div>
+                    </div>
                 </div>
-                <!-- <p th:text="*{post.tags}"></p> -->
-                <span th:text="*{post.author}" th:class="'post-author'"></span>
-                <span th:text="*{post.postCreateTime.toLocaleString()}"></span>
-                <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
-                <span class="link"></span>
-            </a>
-<!--            <a th:href="@{'/posts/delete/' + ${post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>-->
-<!--            <a th:href="@{'/edit/' + ${post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>-->
-        </div>
+            </form>
+
+
+            <form th:action="'/filter'">
+                <div class="grid-container">
+
+                </div>
+            </form>
+        </section>
+
     </div>
 
-    <footer>
+    <div th:each="post: ${posts_list}" class="blog-data">
+        <a th:href="@{'/' + ${post.id}}">
+            <div>
+                <div th:each="tag: *{post.tags}" th:limit="1">
+                    <p th:text="*{tag.name}" class="post-tags"></p>
+                </div>
+                <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
+            </div>
+            <!-- <p th:text="*{post.tags}"></p> -->
+            <span th:text="*{post.author}" th:class="'post-author'"></span>
+            <span th:text="*{post.postCreateTime.toLocaleString()}"></span>
+            <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
+            <span class="link"></span>
+        </a>
+    </div>
+</div>
 
-        <div th:if="${previous_page >= 0}" th:unless="${search_pagination != null}">
-            <a th:href="@{'/?start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link"><< Prev</a>
-        </div>
-        <div th:if="${search_pagination != null && previous_page >= 0}">
-            <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${previous_page} + '&limit=' + ${limit}}" class="prev-link" th:text="'<<Previous Search Page'"></a>
-        </div>
+<footer>
 
-        <div th:if="${next_page < total_pages}" th:unless="${search_pagination != null}">
-            <a th:href="@{'/?start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next>></a>
-        </div>
+    <div th:if="${previous_page >= 0}">
+        <a th:href="@{'/?' + ${url_string} + '&start='  + ${previous_page} + '&limit=' + ${limit}}" class="prev-link"> << Prev</a>
+    </div>
 
-        <div th:if="${search_pagination != null && next_page < total_pages}">
-            <a th:href="@{ '/?search=' + ${search_pagination}  + '&start=' + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next Search Page>></a>
-        </div>
-    </footer>
+    <div th:if="${next_page < total_pages}">
+        <a th:href="@{'/?' + ${url_string} + '&start='  + ${next_page} + '&limit=' + ${limit}}" class="next-link"> Next>> </a>
+    </div>
 
-    <a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
+</footer>
 
+<a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
 </body>
 </html>

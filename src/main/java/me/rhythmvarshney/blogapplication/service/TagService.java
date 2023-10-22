@@ -5,6 +5,7 @@ import me.rhythmvarshney.blogapplication.repositories.TagRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class TagService {
@@ -26,8 +27,9 @@ public class TagService {
         tag.setUpdatedAt(new Date());
         return tag;
     }
-    public void test(String tag){
-        Tag tag1 = tagRepository.findByName(tag);
-        System.out.println(tag1.getPosts());
+
+    public List<Tag> findAll(){
+        return tagRepository.findAll();
     }
+
 }
