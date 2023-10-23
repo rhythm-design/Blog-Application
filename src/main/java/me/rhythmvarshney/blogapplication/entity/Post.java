@@ -2,6 +2,7 @@ package me.rhythmvarshney.blogapplication.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.*;
 
@@ -60,6 +61,12 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags;
+
+    @ManyToOne(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void addComment(Comment comment){
         if(comments == null){

@@ -13,6 +13,7 @@ style.innerHTML = `
   background-position: right .75rem center;
   background-size: 16px 12px;
   cursor: pointer;
+  margin-right: 10px;
 }
 .multiselect-dropdown span.optext, .multiselect-dropdown span.placeholder{
   margin-right:0.5em; 

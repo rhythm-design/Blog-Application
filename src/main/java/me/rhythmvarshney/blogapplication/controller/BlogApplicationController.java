@@ -73,18 +73,8 @@ public class BlogApplicationController {
     }
 
 
-    @GetMapping("/sample1")
-    public String test1(@RequestParam Map<String,String> params, Model model){
-        Page<Post> posts = postService.findAllByParams(params);
-
-        model.addAttribute("posts_list", posts.getContent());
-        model.addAttribute("previous_page",posts.getNumber() - 1);
-        model.addAttribute("next_page", posts.getNumber() + 1);
-        model.addAttribute("total_pages",posts.getTotalPages());
-        model.addAttribute("limit",posts.getSize());
-        if(params.containsKey("search")){
-            model.addAttribute("search_pagination", params.get("search"));
-        }
-        return "sample";
+    @GetMapping("/sample2")
+    public String test1(){
+        return "login-page";
     }
 }

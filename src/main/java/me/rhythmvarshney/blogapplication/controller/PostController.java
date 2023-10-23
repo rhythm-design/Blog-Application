@@ -4,14 +4,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import me.rhythmvarshney.blogapplication.entity.Comment;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
+import me.rhythmvarshney.blogapplication.entity.User;
 import me.rhythmvarshney.blogapplication.service.MergeFilterService;
 import me.rhythmvarshney.blogapplication.service.PostService;
 import me.rhythmvarshney.blogapplication.service.TagService;
+import me.rhythmvarshney.blogapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +30,16 @@ public class PostController {
 
     private TagService tagService;
 
+    private UserService userService;
+
     private MergeFilterService<Post,Tag> mergeFilterService;
 
     @Autowired
-    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> mergeFilterService) {
+    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> mergeFilterService, UserService userService) {
         this.postService = postService;
         this.tagService = tagService;
         this.mergeFilterService = mergeFilterService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -43,8 +50,11 @@ public class PostController {
                             @RequestParam(value = "search", required = false) String searchedText,
                             @RequestParam(value = "start", required = false) String start,
                             @RequestParam(value = "limit", required = false) String limit,
-                            HttpServletRequest request
+                           @RequestParam(value = "user", required = false) List<String> userEmails,
+                           HttpServletRequest request
     ){
+        List<User> users = userService.findAll();
+        System.out.println(userEmails);
         List<Tag> availableTags = tagService.findAll();
         List<String> availableAuthorList = postService.getAllAuthors();
 
@@ -58,8 +68,8 @@ public class PostController {
         if(url != null){
             String updatedUrl = url.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&");
 //            String updatedUrl = url.replaceAll("start=\\d+", "");
-            System.out.println("Start replacer: " + updatedUrl);
-            System.out.println("Start Replacer: " + url.replaceAll("start.?&",""));
+//            System.out.println("Start replacer: " + updatedUrl);
+//            System.out.println("Start Replacer: " + url.replaceAll("start.?&",""));
         }else{
             url = "";
         }
@@ -89,10 +99,32 @@ public class PostController {
         model.addAttribute("next_page", posts.getNumber() + 1);
         model.addAttribute("total_pages",posts.getTotalPages());
         model.addAttribute("limit",posts.getSize());
+        model.addAttribute("user_list", users);
 
         model.addAttribute("url_string", url);
         return "homepage";
     }
+
+
+
+//    @GetMapping("/")
+//    public String homepage(Model model,
+//                           @RequestParam(value = "tag", required = false) List<String> passedTagList,
+//                           @RequestParam(value = "author", required = false) List<String> authorList,
+//                           @RequestParam(value = "order", required = false) String sortOrder,
+//                           @RequestParam(value = "search", required = false) String searchedText,
+//                           @RequestParam(value = "start", required = false) String start,
+//                           @RequestParam(value = "limit", required = false) String limit,
+//                           HttpServletRequest request
+//    ){
+//        List<User> users = userService.findAll();
+//        List<Tag> tags = tagService.findAll();
+////        Specification<Post> postSpecification = mergeFilterService.searchInAllFields()
+//        return "homepage";
+//    }
+
+
+
     @GetMapping("/createPost")
     public String createPost(){
         return "post-form";
@@ -104,7 +136,11 @@ public class PostController {
                              @RequestParam("isPublished") boolean isPublished,
                              @RequestParam("tags") String tags
                              ){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName(); // get the email name of the User
+        User user = userService.findByEmail(email);
         Post post = new Post(title, excerpt, content, "rhythm", new Date(), isPublished, new Date());
+        post.setUser(user);
         String[] tagList = tags.split(",");
         for(String tag: tagList){
             Tag tempTag = tagService.findTagByName(tag);
@@ -116,7 +152,7 @@ public class PostController {
     }
 
 
-    @GetMapping("/{postId}")
+    @GetMapping("/post/{postId}")
     public String singlePostView(@PathVariable int postId, Model model){
         Post post = postService.findById(postId);
         model.addAttribute("single_post",post);

@@ -1,21 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
     <meta charset="UTF-8">
     <title>Blog Application</title>
-    <link rel="stylesheet" th:href="@{/css/sample.css}">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}">
     <script th:src="@{/js/multiselect-dropdown.js}"></script>
 </head>
 <body>
 <div class="blog-container">
     <div class="blog-activities">
         <p class="heading">My Blog Application</p>
+        <div sec:authorize="${isAuthenticated()}">
+            <span sec:authentication="principal.username">
+                Authenticated
+            </span>
+        </div>
     </div>
     <div class="blog-activities">
         <div class="login-search-myposts">
             <div class="profile-actions">
-                <a href="#">My Posts</a>
-                <a th:href="'#'">Login</a>
+
+                <div sec:authorize="${isAuthenticated()}" class="logged-in-buttons">
+                    <a th:href="'/createPost'"><button class="submit-btn" >Create Post</button></a>
+                    <a th:href="'#'"><button class="submit-btn" >My Posts</button></a>
+                    <a th:href="'/logout'"><button class="submit-btn" >Logout</button></a>
+                </div>
+
+                <div sec:authorize="${!isAuthenticated()}" class="auth-button">
+                    <a th:href="'/login'"><button class="submit-btn" >Login</button></a>
+                </div>
             </div>
         </div>
 
@@ -23,10 +38,12 @@
             <form th:action="'/'">
                 <div class="grid-container">
                     <div class="false-input">
-                        <select placeholder="Select Authors" name="author" id="author-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
-                            <option th:each="author: ${authors_list}" th:value="*{author}" th:text="*{author}"></option>
+<!--                        <select placeholder="Select Authors" name="author" id="author-dropdown" multiple multiselect-search="true" multiselect-select-all="true">-->
+<!--                            <option th:each="author: ${authors_list}" th:value="*{author}" th:text="*{author}"></option>-->
+<!--                        </select>-->
+                        <select placeholder="Select Authors" name="user" id="author-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
+                            <option th:each="user: ${user_list}" th:value="*{user.email}" th:text="*{user.name}"></option>
                         </select>
-
                         <select placeholder="Select Tags" name="tag" id="tag-dropdown" multiple multiselect-search="true" multiselect-select-all="true">
                             <option th:each="tag: ${tags_list}" th:value="*{tag.name}" th:text="*{tag.name}"></option>
                         </select>
@@ -40,7 +57,7 @@
                         </select>
                     </div>
                     <div class="false-input">
-                        <input type="text" name="search" style="width: 60%; margin-bottom: 7px; margin-top: 7px; padding-left: 8px" placeholder="Comma Seperated">
+                        <input type="text" name="search" class="submit-btn"  style="width: 80%; margin-right: 20px" placeholder="Search Bar">
                         <input type="submit" value="Search" class="submit-btn" style="display: inline">
                     </div>
 
@@ -48,19 +65,12 @@
                     </div>
                 </div>
             </form>
-
-
-            <form th:action="'/filter'">
-                <div class="grid-container">
-
-                </div>
-            </form>
         </section>
 
     </div>
 
     <div th:each="post: ${posts_list}" class="blog-data">
-        <a th:href="@{'/' + ${post.id}}">
+        <a th:href="@{'/post/' + ${post.id}}">
             <div>
                 <div th:each="tag: *{post.tags}" th:limit="1">
                     <p th:text="*{tag.name}" class="post-tags"></p>
@@ -68,7 +78,7 @@
                 <p th:text="*{post.postTitle}" th:class="'post-title'"></p>
             </div>
             <!-- <p th:text="*{post.tags}"></p> -->
-            <span th:text="*{post.author}" th:class="'post-author'"></span>
+            <span th:text="*{post.user.name}" th:class="'post-author'"></span>
             <span th:text="*{post.postCreateTime.toLocaleString()}"></span>
             <p th:text="*{post.postContent}" th:class="'post-excerpt'"></p>
             <span class="link"></span>
@@ -87,7 +97,5 @@
     </div>
 
 </footer>
-
-<a th:href="'/createPost'"><button type="submit" class="crete-btn" style="margin-top: 50px">Create Post</button></a>
 </body>
 </html>

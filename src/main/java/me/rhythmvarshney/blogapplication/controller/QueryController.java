@@ -3,22 +3,17 @@ package me.rhythmvarshney.blogapplication.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
-import me.rhythmvarshney.blogapplication.service.FilteringService;
 import me.rhythmvarshney.blogapplication.service.MergeFilterService;
 import me.rhythmvarshney.blogapplication.service.PostService;
 import me.rhythmvarshney.blogapplication.service.TagService;
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 

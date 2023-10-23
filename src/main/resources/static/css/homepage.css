@@ -20,13 +20,6 @@ body{
     grid-gap: 20px;
 }
 
-
-.blog-activities{
-    height: 150px;
-    text-align: center;
-    display: block;
-}
-
 #pageForm, #search-input, #sortForm, #filterForm{
     display: inline;
 }
@@ -97,7 +90,7 @@ body{
     margin: 15px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* Number of lines you want to display */
+    -webkit-line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -139,7 +132,7 @@ body{
 }
 
 footer {
-    overflow: hidden; /* Create a new block formatting context */
+    overflow: hidden;
     margin-top: 20px;
 }
 
@@ -164,8 +157,68 @@ footer {
     margin-right: 10px;
 }
 
-/*.blog-data a div{*/
-/*    border: 2px solid green;*/
-/*    padding-right: 20px;*/
-/*}*/
+.grid-container {
+    border: solid 3px #38546d;
+    border-radius: 10px;
+    padding: 5px;
+}
 
+.false-input {
+    display: flex;
+    border: solid 3px #fff;
+}
+
+
+input,button {
+    height: auto;
+    border-style: none;
+    outline: none;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+select {
+    height: auto;
+    border-style: none;
+    outline: none;
+    border-radius: 4px;
+    margin: 5px;
+    width: 150px;
+    padding: 6px;
+}
+
+.submit-btn{
+    border: 2px solid black;
+    padding:5px 15px;
+    background:#fff;
+    cursor:pointer;
+    height: 40px;
+    font-weight: 500;
+}
+
+.blog-activities{
+    height: 180px;
+    display: block;
+    padding: 10px;
+}
+
+.login-search-myposts{
+    display: inline;
+}
+
+.profile-actions{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.profile-actions a{
+    margin-right: 50px;
+}
+
+#tag-search{
+    margin-top: 5px;
+}
+
+.false-input select{
+    margin-right: 10px;
+}
