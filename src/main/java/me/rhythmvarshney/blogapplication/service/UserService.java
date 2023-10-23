@@ -4,6 +4,7 @@ package me.rhythmvarshney.blogapplication.service;
 import me.rhythmvarshney.blogapplication.entity.User;
 import me.rhythmvarshney.blogapplication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,6 +62,11 @@ public class UserService implements UserDetailsService {
     public List<User> findAll(){
         return  userRepository.findAll();
     }
+
+    public List<User> findAll(Specification<User> specification){
+        return userRepository.findAll(specification);
+    }
+
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email);

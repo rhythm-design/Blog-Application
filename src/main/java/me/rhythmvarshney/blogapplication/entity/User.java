@@ -40,7 +40,7 @@ public class User {
         if(posts == null){
             posts = new ArrayList<>();
         }
-        post.setUser(this);
+        post.setAuthor(this);
         posts.add(post);
     }
 

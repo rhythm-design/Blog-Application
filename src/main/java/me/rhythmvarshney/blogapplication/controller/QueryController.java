@@ -70,9 +70,7 @@ public class QueryController {
         Specification<Post> postSpecification = mergeFilterService.searchInAllFields(
                 passedTagList,
                 Post.class.getDeclaredFields(),
-                searchedText,
-                "",
-                ""
+                searchedText
         );
 
 

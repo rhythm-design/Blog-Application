@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,20 +33,22 @@ public class PostController {
 
     private UserService userService;
 
-    private MergeFilterService<Post,Tag> mergeFilterService;
+    private MergeFilterService<Post,Tag> postTagMergeFilterService;
+
+    private MergeFilterService<User,Post> userPostMergeFilterService;
 
     @Autowired
-    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> mergeFilterService, UserService userService) {
+    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> postTagMergeFilterService, UserService userService, MergeFilterService<User,Post> userPostMergeFilterService) {
         this.postService = postService;
         this.tagService = tagService;
-        this.mergeFilterService = mergeFilterService;
+        this.postTagMergeFilterService = postTagMergeFilterService;
         this.userService = userService;
+        this.userPostMergeFilterService = userPostMergeFilterService;
     }
 
     @GetMapping("/")
     public String homepage(Model model,
                             @RequestParam(value = "tag", required = false) List<String> passedTagList,
-                            @RequestParam(value = "author", required = false) List<String> authorList,
                             @RequestParam(value = "order", required = false) String sortOrder,
                             @RequestParam(value = "search", required = false) String searchedText,
                             @RequestParam(value = "start", required = false) String start,
@@ -53,10 +56,6 @@ public class PostController {
                            @RequestParam(value = "user", required = false) List<String> userEmails,
                            HttpServletRequest request
     ){
-        List<User> users = userService.findAll();
-        System.out.println(userEmails);
-        List<Tag> availableTags = tagService.findAll();
-        List<String> availableAuthorList = postService.getAllAuthors();
 
         String passedUrl = request.getQueryString();
 
@@ -65,98 +64,71 @@ public class PostController {
                         .replaceAll("&limit=\\d+", "").replaceAll("\\&+", "&")
                 :"";
 
-        if(url != null){
-            String updatedUrl = url.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&");
-//            String updatedUrl = url.replaceAll("start=\\d+", "");
-//            System.out.println("Start replacer: " + updatedUrl);
-//            System.out.println("Start Replacer: " + url.replaceAll("start.?&",""));
-        }else{
-            url = "";
-        }
+        List<User> users = userService.findAll();
+        List<Tag> availableTags = tagService.findAll();
 
-//        String url=request.getQueryString()!=null?
-//                "&"+request.getQueryString().replaceAll("limit.?&","").replaceAll("start.?&",""):
-//                "";
+        Specification<Post> authorSpecification = postService.collectionContain(userEmails);
 
-        Specification<Post> postSpecification = mergeFilterService.searchInAllFields(
-                passedTagList,
-                Post.class.getDeclaredFields(),
-                searchedText,
-                "",
-                ""
-        );
+        Specification<Post> postSpecification = postTagMergeFilterService.searchInAllFields(passedTagList, Post.class.getDeclaredFields(), searchedText);
 
+        Specification<Post> finalSpecification = Specification
+                                                    .where(postSpecification)
+                                                    .and(authorSpecification);
 
         int startPage = start == null ? Integer.parseInt("0"): Integer.parseInt(start);
         int blogCount = limit == null ? Integer.parseInt("6"): Integer.parseInt(limit);
-        PageRequest pageRequest = PageRequest.of(startPage,blogCount);
 
-        Page<Post> posts = postService.findAll(postSpecification,pageRequest);
+        PageRequest pageRequest = sortBy(startPage,blogCount,sortOrder);
+        Page<Post> posts = postService.findAllPublishedPosts(finalSpecification, pageRequest);
+
         model.addAttribute("posts_list", posts.getContent());
         model.addAttribute("tags_list",availableTags);
-        model.addAttribute("authors_list",availableAuthorList);
         model.addAttribute("previous_page",posts.getNumber() - 1);
         model.addAttribute("next_page", posts.getNumber() + 1);
         model.addAttribute("total_pages",posts.getTotalPages());
         model.addAttribute("limit",posts.getSize());
         model.addAttribute("user_list", users);
-
         model.addAttribute("url_string", url);
         return "homepage";
     }
-
-
-
-//    @GetMapping("/")
-//    public String homepage(Model model,
-//                           @RequestParam(value = "tag", required = false) List<String> passedTagList,
-//                           @RequestParam(value = "author", required = false) List<String> authorList,
-//                           @RequestParam(value = "order", required = false) String sortOrder,
-//                           @RequestParam(value = "search", required = false) String searchedText,
-//                           @RequestParam(value = "start", required = false) String start,
-//                           @RequestParam(value = "limit", required = false) String limit,
-//                           HttpServletRequest request
-//    ){
-//        List<User> users = userService.findAll();
-//        List<Tag> tags = tagService.findAll();
-////        Specification<Post> postSpecification = mergeFilterService.searchInAllFields()
-//        return "homepage";
-//    }
-
-
 
     @GetMapping("/createPost")
     public String createPost(){
         return "post-form";
     }
     @PostMapping("/createPost")
-    public String createPost(@RequestParam("title") String title,
+    public String savePost(@RequestParam("title") String title,
                              @RequestParam("excerpt") String excerpt,
                              @RequestParam("content") String content,
-                             @RequestParam("isPublished") boolean isPublished,
-                             @RequestParam("tags") String tags
+                             @RequestParam("tags") String tags,
+                             @RequestParam(value = "isDraft", required = false) String isDraft
                              ){
+
+        System.out.println("Status is: " + isDraft);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName(); // get the email name of the User
         User user = userService.findByEmail(email);
-        Post post = new Post(title, excerpt, content, "rhythm", new Date(), isPublished, new Date());
-        post.setUser(user);
+        Post post = new Post(title, excerpt, content, new Date(), isDraft == null, new Date());
+        post.setAuthor(user);
         String[] tagList = tags.split(",");
         for(String tag: tagList){
             Tag tempTag = tagService.findTagByName(tag);
             post.addTag(tempTag);
         }
         postService.save(post);
-//        tagService.test("java");
         return "redirect:/";
     }
 
 
     @GetMapping("/post/{postId}")
     public String singlePostView(@PathVariable int postId, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("vbnj " + authentication.getName());
         Post post = postService.findById(postId);
         model.addAttribute("single_post",post);
         model.addAttribute("post_comments",post.getComments());
+        model.addAttribute("current_logged_in_user", authentication.getName());
         return "single-post";
     }
 
@@ -182,7 +154,7 @@ public class PostController {
         }
         postService.save(post);
 
-        return "redirect:/" + postId;
+        return "redirect:/post/" + postId;
     }
 
     @GetMapping("/delete/{postId}")
@@ -191,28 +163,113 @@ public class PostController {
         return "redirect:/";
     }
 
+    private PageRequest sortBy(int start, int blogCount, String s){
 
+        if(s == null || s.isEmpty()){
+            return PageRequest.of(start,blogCount);
+        }
+        if(s.equals("date-asc")){
+            return PageRequest.of(start,blogCount, Sort.Direction.ASC, "publishTime");
+        }else if(s.equals("date-desc")){
+            return PageRequest.of(start,blogCount, Sort.Direction.DESC, "publishTime");
+        }else if(s.equals("title-asc")){
+            return PageRequest.of(start,blogCount, Sort.Direction.ASC, "postTitle");
+        }else if(s.equals("title-desc")){
+            return PageRequest.of(start,blogCount, Sort.Direction.DESC, "postTitle");
+        }else{
+            return PageRequest.of(start,blogCount);
+        }
 
-    @PostMapping("/addcomment/{postId}")
-    public String addCommentByPostId(@PathVariable int postId,
-                                     @RequestParam("user_name") String name,
-                                     @RequestParam("user_email") String email,
-                                     @RequestParam("user_comment") String comment
-    ){
-        // Find post by postId
-        Post post = postService.findById(postId);
+    }
 
-        //Construct Comment
-        Comment comments = new Comment(name,email, comment);
+    @GetMapping("/myposts")
+    public String myposts(Model model,
+                          @RequestParam(value = "tag", required = false) List<String> passedTagList,
+                          @RequestParam(value = "order", required = false) String sortOrder,
+                          @RequestParam(value = "search", required = false) String searchedText,
+                          @RequestParam(value = "start", required = false) String start,
+                          @RequestParam(value = "limit", required = false) String limit,
+                          @RequestParam(value = "user", required = false) List<String> userEmails,
+                          HttpServletRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String passedUrl = request.getQueryString();
 
-        // Save the comment to post
-        post.addComment(comments);
+        String url = request.getQueryString() != null ?
+                passedUrl.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&")
+                        .replaceAll("&limit=\\d+", "").replaceAll("\\&+", "&")
+                :"";
 
-        // Save the post again in DB
-        postService.save(post);
+        List<User> users = userService.findAll();
+        List<Tag> availableTags = tagService.findAll();
 
-        //redirect to post again
-        return "redirect:/" + postId;
+        Specification<Post> authorSpecification = postService.collectionContain(userEmails);
+
+        Specification<Post> postSpecification = postTagMergeFilterService.searchInAllFields(passedTagList, Post.class.getDeclaredFields(), searchedText);
+
+        Specification<Post> finalSpecification = Specification
+                .where(postSpecification)
+                .and(authorSpecification);
+
+        int startPage = start == null ? Integer.parseInt("0"): Integer.parseInt(start);
+        int blogCount = limit == null ? Integer.parseInt("6"): Integer.parseInt(limit);
+
+        PageRequest pageRequest = sortBy(startPage,blogCount,sortOrder);
+        Page<Post> posts = postService.findAllPostsByAuthorEmail(authentication.getName(), pageRequest);
+
+        model.addAttribute("posts_list", posts.getContent());
+        model.addAttribute("tags_list",availableTags);
+        model.addAttribute("previous_page",posts.getNumber() - 1);
+        model.addAttribute("next_page", posts.getNumber() + 1);
+        model.addAttribute("total_pages",posts.getTotalPages());
+        model.addAttribute("limit",posts.getSize());
+        model.addAttribute("user_list", users);
+        model.addAttribute("url_string", url);
+        return "homepage";
+    }
+
+    @GetMapping("/mydrafts")
+    public String mydrafts(Model model,
+                          @RequestParam(value = "tag", required = false) List<String> passedTagList,
+                          @RequestParam(value = "order", required = false) String sortOrder,
+                          @RequestParam(value = "search", required = false) String searchedText,
+                          @RequestParam(value = "start", required = false) String start,
+                          @RequestParam(value = "limit", required = false) String limit,
+                          @RequestParam(value = "user", required = false) List<String> userEmails,
+                          HttpServletRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String passedUrl = request.getQueryString();
+
+        String url = request.getQueryString() != null ?
+                passedUrl.replaceAll("&start=\\d+", "").replaceAll("\\&+", "&")
+                        .replaceAll("&limit=\\d+", "").replaceAll("\\&+", "&")
+                :"";
+
+        List<User> users = userService.findAll();
+        List<Tag> availableTags = tagService.findAll();
+
+        Specification<Post> authorSpecification = postService.collectionContain(userEmails);
+
+        Specification<Post> postSpecification = postTagMergeFilterService.searchInAllFields(passedTagList, Post.class.getDeclaredFields(), searchedText);
+
+        Specification<Post> finalSpecification = Specification
+                .where(postSpecification)
+                .and(authorSpecification);
+
+        int startPage = start == null ? Integer.parseInt("0"): Integer.parseInt(start);
+        int blogCount = limit == null ? Integer.parseInt("6"): Integer.parseInt(limit);
+
+        PageRequest pageRequest = sortBy(startPage,blogCount,sortOrder);
+        Page<Post> posts = postService.findAllDraftPostsByEmail(authentication.getName(), pageRequest);
+
+        model.addAttribute("posts_list", posts.getContent());
+        model.addAttribute("tags_list",availableTags);
+        model.addAttribute("previous_page",posts.getNumber() - 1);
+        model.addAttribute("next_page", posts.getNumber() + 1);
+        model.addAttribute("total_pages",posts.getTotalPages());
+        model.addAttribute("limit",posts.getSize());
+        model.addAttribute("user_list", users);
+        model.addAttribute("url_string", url);
+        return "homepage";
     }
 
 }

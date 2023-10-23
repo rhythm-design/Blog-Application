@@ -19,7 +19,11 @@
 
     <textarea name="content" placeholder="Content" class="input-textArea"></textarea>
 
-    <input type="hidden" name="isPublished" value="true" />
+    <div class="form__privacy">
+        <input id="checkbox" name="isDraft" type="checkbox" value="true">
+        <label for="checkbox">Save as draft</label>
+    </div>
+
     <br/> <br/>
     <div class="submit-div">
         <input type="submit" value="Publish" class="submit-btn"/>

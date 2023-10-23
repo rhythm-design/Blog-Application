@@ -43,35 +43,4 @@ public class AuthenticationController {
         return "redirect:/login";
     }
 
-//    @GetMapping("/jikl")
-//    public String gety(){
-//        return "error";
-//    }
-//
-//    @GetMapping("/check")
-//    public String test(){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String name = auth.getName(); //get logged in username
-//
-//        System.out.println(auth.getName() + " -> " + auth.getPrincipal() + "->" + auth.getCredentials() + "->" + auth);
-////        model.addAttribute("username", name);
-//        return "redirect:/";
-//    }
-
-//    @GetMapping("/success")
-//    public String saveUsertodb(@RequestParam(value = "username", required = false) String username,
-//                       @RequestParam(value = "email", required = false) String email,
-//                       @RequestParam(value = "password", required = false) String password,
-//                       @RequestParam(value = "confirmPassword", required = false) String confirmPassword
-//                       ){
-//        System.out.println("here");
-//        User user = new User();
-//        user.setName(username);
-//        user.setEmail(email);
-//        user.setPassword(password);
-//        user.setRole("NORMAL");
-//        userService.saveUser(user);
-//
-//        return "signup-page";
-//    }
 }

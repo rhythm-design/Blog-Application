@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.rhythmvarshney.blogapplication.entity.Comment;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
+import me.rhythmvarshney.blogapplication.entity.User;
 import me.rhythmvarshney.blogapplication.repositories.PostRepository;
 import me.rhythmvarshney.blogapplication.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,9 @@ public class BlogApplicationController {
 
     @Autowired
     PostService postService;
-    @PutMapping("/fillData")
+    @GetMapping("/fillData")
     public void test() throws IOException, InterruptedException {
+        System.out.println("here");
         for(int i = 1; i <= 30; i++){
             URL url = new URL("https://api.api-ninjas.com/v1/loremipsum?paragraphs=6");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -49,9 +51,14 @@ public class BlogApplicationController {
             post.setPostTitle("Title is Best" + i);
             post.setExcerpt("This is excerpt" + i%5);
             post.setPostContent(root.path("text").asText());
-            post.setAuthor("Rhythm");
             post.setPublishTime(new Date());
             post.setPostCreateTime(new Date());
+            User user = new User();
+            user.setName("Rhythm" + i);
+            user.setPassword("test");
+            user.setEmail("r@r" + i);
+            user.setRole("NORMAL");
+            post.setAuthor(user);
             if(i%5==0){
                 post.setPublished(false);
             }else{

@@ -72,15 +72,15 @@ public interface MergeFilterService<T,V> {
         };
     }
 
-    default Specification<T> searchInAllFields(List<String> collectionList, Field[] fields, String searchText, String key, String value){
+    default Specification<T> searchInAllFields(List<String> collectionList, Field[] fields, String searchText){
         Specification<T> tagsSpecification = collectionContain(collectionList);
 
         Specification<T> textSearchSpecification = searchInStringFields(fields,searchText);
 
         return Specification
                 .where(tagsSpecification)
-                .and(textSearchSpecification)
-                .and(searchByKeyValue(key,value));
+                .and(textSearchSpecification);
     }
+
 
 }

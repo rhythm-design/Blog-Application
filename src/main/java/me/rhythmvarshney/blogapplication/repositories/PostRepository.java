@@ -4,6 +4,7 @@ import lombok.NonNull;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +27,18 @@ public interface PostRepository extends JpaRepository<Post,Integer>, JpaSpecific
 
     @Query("SELECT DISTINCT p.author FROM Post p")
     List<String> findAllAuthors();
+
+//    Page<Post> findAllByIsPublishedFalse(Specification<Post> spec, Pageable pageable);
+
+//    Page<Post> findAllWhereIsPublishedIsFalse(Specification<Post> spec, Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.isPublished = true")
+    Page<Post> findPublishedPosts(Specification<Post> spec, Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.isPublished = true AND p.author.email = :email")
+    Page<Post> findAllPostsByUserEmail(@Param("email") String email, Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.isPublished = false AND p.author.email = :email")
+    Page<Post> findAllDraftPostsByUserEmail(@Param("email") String email, Pageable pageable);
 
 }

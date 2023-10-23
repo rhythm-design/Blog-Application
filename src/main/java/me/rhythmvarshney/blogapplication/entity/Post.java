@@ -31,10 +31,6 @@ public class Post {
     @NonNull
     private String postContent;
 
-    @Column(name = "author")
-    @NonNull
-    private String author;
-
     @Column(name = "published_at")
     @NonNull
     private Date publishTime;
@@ -66,7 +62,7 @@ public class Post {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
     })
     @JoinColumn(name = "user_id")
-    private User user;
+    private User author;
 
     public void addComment(Comment comment){
         if(comments == null){

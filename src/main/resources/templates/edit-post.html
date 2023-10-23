@@ -10,7 +10,7 @@
     <p class="page-title">Edit Post</p>
 </div>
 
-<form th:method="post" th:action="'/edit'" th:object="${post_data}">
+<form th:method="post" th:action="'/edit'" th:object="${post_data}" style="padding-left: 15%; padding-right: 15%">
     <input type="text" name="title" placeholder="Title" class="input-field" th:value="*{postTitle}">
     <br/> <br/>
     <input type="text" name="tags" placeholder="Tags(Comma Seperated)" class="input-field" th:value="*{#strings.arrayJoin(tags,',')}">

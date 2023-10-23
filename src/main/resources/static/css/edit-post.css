@@ -52,3 +52,24 @@ body{
     display: flex;
     justify-content: center;
 }
+
+.form__privacy {
+    display: flex;
+    align-items: center;
+}
+
+[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+label {
+    margin-top: 10px;
+    margin-left: 20px;
+    color: #000;
+    font-size: 20px;
+    font-weight: 500;
+}

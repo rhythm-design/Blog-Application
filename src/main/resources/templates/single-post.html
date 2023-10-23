@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
 <head>
     <meta charset="UTF-8">
     <title>Create Post</title>
@@ -9,48 +10,67 @@
 <div >
     <nav>
         <a th:href="@{'/'}">My Blog Application</a>
-        <p>Login</p>
+        <div>
+            <div sec:authorize="${isAuthenticated()}" class="logged-in-buttons">
+                <a th:href="'/logout'"><button class="submit-btn" >Logout</button></a>
+            </div>
+
+            <div sec:authorize="${!isAuthenticated()}" class="auth-button">
+                <a th:href="'/login'"><button class="submit-btn" >Login</button></a>
+            </div>
+        </div>
     </nav>
 
-    <div class="blog-area" th:object="${single_post}">
-        <p th:text="*{postTitle}" class="blog-title"></p>
-        <p th:text="*{author}" class="blog-author"></p>
-        <p th:text="*{publishTime}" class="blog-time"></p>
-        <div>
-            <strong>Excerpt-</strong><p th:text="*{excerpt}" class="blog-excerpt"></p>
-            <p th:text="*{postContent}" class="blog-content"></p>
-        </div>
-    </div>
+    <div style="padding-right: 25%; padding-left: 25%">
 
-    <div class="comment-form">
-        <p class="comment-title">Leave a Comment</p>
-        <form method="post" th:action="@{'/addcomment/' + ${single_post.id}}">
-            <input type="text" name="user_name" class="input-field" placeholder="Name">
-            <br/> <br/>
-            <input type="email" name="user_email" class="input-field" placeholder="Email">
-            <br/> <br/>
-            <textarea style="width: 50%; height: 100px" name="user_comment" placeholder="Comment" class="comment-textfield"></textarea>
-            <br/> <br/>
-            <div class="submit-div">
-                <input type="submit" value="Add Comment" class="submit-btn"/>
+        <div class="blog-area" th:object="${single_post}">
+            <p th:text="*{postTitle}" class="blog-title"></p>
+
+            <div th:if="${current_logged_in_user.equals(single_post.author.email)}" style="text-align: center; margin-bottom: 20px">
+                <a th:href="@{'/delete/' + ${single_post.id}}"><button type="submit" class="delete-button submit-btn">Delete Post</button></a>
+                <a th:href="@{'/edit/' + ${single_post.id}}"><button type="submit" class="delete-button submit-btn">Edit Post</button></a>
             </div>
-        </form>
-    </div>
-    <div class="all-comments">
-        <div th:each="comment : ${post_comments}" class="comment-container">
-            <p th:text="*{comment.name}" class="commentor-name"></p>
-            <p th:text="*{comment.email}" class="commentor-email"></p>
-            <p th:text="*{comment.comment}" class="commentor-comment"></p>
 
-            <a th:href="@{'/comment/delete-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Delete</button></a>
-            <a th:href="@{'/comment/update-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Update</button></a>
+            <p th:text="*{author.name}" class="blog-author"></p>
+            <p th:text="*{publishTime}" class="blog-time"></p>
+            <div>
+                <strong>Excerpt-</strong><p th:text="*{excerpt}" class="blog-excerpt"></p>
+                <p th:text="*{postContent}" class="blog-content"></p>
+            </div>
+        </div>
+
+        <div sec:authorize="${isAuthenticated()}" >
+            <div class="comment-form">
+                <p class="comment-title">Leave a Comment</p>
+                <form method="post" th:action="@{'/comment/addcomment/' + ${single_post.id}}">
+                    <textarea style="width: 50%; height: 100px" name="user_comment" placeholder="Comment" class="comment-textfield"></textarea>
+                    <br/> <br/>
+                    <div class="submit-div">
+                        <input type="submit" value="Add Comment" class="submit-btn"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div sec:authorize="${!isAuthenticated()}" >
+            <div class="comment-form">
+                <p class="comment-title" style="margin-bottom: 0">Login To Comment</p>
+            </div>
+        </div>
+
+        <div class="all-comments">
+            <div th:each="comment : ${post_comments}" class="comment-container">
+                <p th:text="*{comment.name}" class="commentor-name"></p>
+                <p th:text="*{comment.email}" class="commentor-email"></p>
+                <p th:text="*{comment.comment}" class="commentor-comment"></p>
+
+                <div th:if="${current_logged_in_user.equals(comment.email)}" style="text-align: center; margin-bottom: 20px">
+                    <a th:href="@{'/comment/delete-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Delete</button></a>
+                    <a th:href="@{'/comment/update-comment/' + ${comment.id} + '/' +${single_post.id}}"><button class="submit-btn">Update</button></a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-<footer>
-    <a th:href="@{'/delete/' + ${single_post.id}}"><button type="submit" class="delete-button">Delete Post</button></a>
-    <a th:href="@{'/edit/' + ${single_post.id}}"><button type="submit" class="delete-button">Edit Post</button></a>
-</footer>
 </body>
 </html>

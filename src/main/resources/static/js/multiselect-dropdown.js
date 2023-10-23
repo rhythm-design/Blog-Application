@@ -56,6 +56,7 @@ style.innerHTML = `
 }
 .multiselect-dropdown-list-wrapper .multiselect-dropdown-search{
   margin-bottom:5px;
+  height: 30px;
 }
 .multiselect-dropdown-list{
   padding:2px;

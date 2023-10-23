@@ -1,8 +1,12 @@
 package me.rhythmvarshney.blogapplication.service;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import me.rhythmvarshney.blogapplication.entity.Post;
 import me.rhythmvarshney.blogapplication.entity.Tag;
+import me.rhythmvarshney.blogapplication.entity.User;
 import me.rhythmvarshney.blogapplication.repositories.PostRepository;
+import me.rhythmvarshney.blogapplication.repositories.UserRepository;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -14,8 +18,14 @@ public class PostService {
 
     private PostRepository postRepository;
 
-    public PostService(PostRepository postRepository) {
+    private UserRepository userRepository;
+
+    private MergeFilterService<User,Post> userPostMergeFilterService;
+
+    public PostService(PostRepository postRepository, UserRepository userRepository, MergeFilterService<User,Post> userPostMergeFilterService) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.userPostMergeFilterService = userPostMergeFilterService;
     }
 
     public Post findById(int id){
@@ -147,5 +157,34 @@ public class PostService {
 
     public List<String> getAllAuthors(){
         return postRepository.findAllAuthors();
+    }
+
+
+    public Specification<Post> collectionContain(List<String> collectionList) {
+        return (root, query, criteriaBuilder) -> {
+            if (collectionList == null || collectionList.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+
+            List<Predicate> predicates = new ArrayList<>();
+            for(String email: collectionList){
+                User user = userRepository.findByEmail(email);
+                Predicate equal = criteriaBuilder.equal(root.get("author"),user);
+                predicates.add(equal);
+            }
+            return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    public Page<Post> findAllPublishedPosts(Specification<Post> specification,PageRequest pageRequest){
+        return postRepository.findPublishedPosts(specification, pageRequest);
+    }
+
+    public Page<Post> findAllPostsByAuthorEmail(String email, PageRequest pageRequest){
+        return postRepository.findAllPostsByUserEmail(email, pageRequest);
+    }
+
+    public Page<Post> findAllDraftPostsByEmail(String email, PageRequest pageRequest){
+        return postRepository.findAllDraftPostsByUserEmail(email,pageRequest);
     }
 }

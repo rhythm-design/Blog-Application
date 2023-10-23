@@ -24,7 +24,7 @@ nav a{
     text-decoration: none;
 }
 
-nav p{
+nav div{
     position: relative;
     float: right;
     right: 30px;
@@ -37,11 +37,12 @@ nav p{
 
 .blog-area div{
     text-align: initial;
-    margin-top: 70px;
+    margin-top: 30px;
 }
 
 .blog-title{
     font-size: 60px;
+    margin-bottom: 0;
 }
 
 .blog-author{

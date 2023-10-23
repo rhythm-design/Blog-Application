@@ -173,8 +173,8 @@ input,button {
     height: auto;
     border-style: none;
     outline: none;
-    border-radius: 10px;
-    border: 2px solid black;
+    /*border-radius: 10px;*/
+    /*border: 2px solid black;*/
 }
 
 select {
@@ -212,7 +212,11 @@ select {
 }
 
 .profile-actions a{
-    margin-right: 50px;
+    margin-right: 20px;
+}
+
+.profile-actions a:nth-child(1){
+    margin-right: 120px;
 }
 
 #tag-search{
