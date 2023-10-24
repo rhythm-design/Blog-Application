@@ -23,7 +23,7 @@ public class Post {
     @NonNull
     private String postTitle;
 
-    @Column(name = "excerpt")
+    @Column(name = "excerpt", columnDefinition = "text")
     @NonNull
     private String excerpt;
 
