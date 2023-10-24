@@ -104,7 +104,6 @@ public class PostController {
                              @RequestParam(value = "isDraft", required = false) String isDraft
                              ){
 
-        System.out.println("Status is: " + isDraft);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName(); // get the email name of the User
         User user = userService.findByEmail(email);
@@ -124,7 +123,6 @@ public class PostController {
     public String singlePostView(@PathVariable int postId, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("vbnj " + authentication.getName());
         Post post = postService.findById(postId);
         model.addAttribute("single_post",post);
         model.addAttribute("post_comments",post.getComments());

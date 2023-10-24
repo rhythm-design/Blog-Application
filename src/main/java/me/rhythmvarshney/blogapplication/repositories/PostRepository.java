@@ -23,17 +23,9 @@ public interface PostRepository extends JpaRepository<Post,Integer>, JpaSpecific
             "OR LOWER(t.name) LIKE %:keyword%")
     Set<Post> findByKeyword(@Param("keyword") String keyword);
 
-    Post findByIsPublished(boolean isPublished);
-
     @Query("SELECT DISTINCT p.author FROM Post p")
     List<String> findAllAuthors();
 
-//    Page<Post> findAllByIsPublishedFalse(Specification<Post> spec, Pageable pageable);
-
-//    Page<Post> findAllWhereIsPublishedIsFalse(Specification<Post> spec, Pageable pageable);
-
-    @Query("SELECT p FROM Post p WHERE p.isPublished = true")
-    Page<Post> findPublishedPosts(Specification<Post> spec, Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.isPublished = true AND p.author.email = :email")
     Page<Post> findAllPostsByUserEmail(@Param("email") String email, Pageable pageable);

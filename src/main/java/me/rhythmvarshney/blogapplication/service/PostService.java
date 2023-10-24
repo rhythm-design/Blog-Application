@@ -177,7 +177,9 @@ public class PostService {
     }
 
     public Page<Post> findAllPublishedPosts(Specification<Post> specification,PageRequest pageRequest){
-        return postRepository.findPublishedPosts(specification, pageRequest);
+        Specification<Post> spec = isPublished();
+        Specification<Post> finalSpecification = Specification.where(spec).and(specification);
+        return postRepository.findAll(finalSpecification, pageRequest);
     }
 
     public Page<Post> findAllPostsByAuthorEmail(String email, PageRequest pageRequest){
@@ -186,5 +188,9 @@ public class PostService {
 
     public Page<Post> findAllDraftPostsByEmail(String email, PageRequest pageRequest){
         return postRepository.findAllDraftPostsByUserEmail(email,pageRequest);
+    }
+
+    private static Specification<Post> isPublished() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isPublished"));
     }
 }

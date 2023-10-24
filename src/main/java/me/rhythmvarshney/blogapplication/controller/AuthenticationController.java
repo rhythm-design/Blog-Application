@@ -32,7 +32,6 @@ public class AuthenticationController {
                                @RequestParam(value = "email", required = false) String email,
                                @RequestParam(value = "password", required = false) String password,
                                @RequestParam(value = "confirmPassword", required = false) String confirmPassword){
-        System.out.println("here");
         User user = new User();
         user.setName(username);
         user.setEmail(email);
