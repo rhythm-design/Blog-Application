@@ -40,15 +40,16 @@ public class AuthenticationController {
         user.setName(username);
         user.setEmail(email);
         user.setPassword(password);
-        user.setRole("NORMAL");
+        user.setRole("ROLE_NORMAL");
         userService.saveUser(user);
 
         try {
+            request.logout();
             request.login(email, password);
-        } catch (ServletException e) {
+        } catch (Exception e) {
             System.out.println("Error while login " + e);
         }
-        return "redirect:/login";
+        return "redirect:/";
     }
 
 }
