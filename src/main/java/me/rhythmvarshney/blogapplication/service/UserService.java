@@ -63,11 +63,6 @@ public class UserService implements UserDetailsService {
         return  userRepository.findAll();
     }
 
-    public List<User> findAll(Specification<User> specification){
-        return userRepository.findAll(specification);
-    }
-
-
     public User findByEmail(String email){
         return userRepository.findByEmail(email);
     }

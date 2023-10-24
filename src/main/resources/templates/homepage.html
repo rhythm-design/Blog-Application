@@ -14,7 +14,7 @@
         <p class="heading">My Blog Application</p>
     </div>
     <div class="blog-activities">
-        <div class="login-search-myposts">
+        <div class="login-search-myposts" style="direction: rtl; margin-top: 3px; margin-bottom: 2px; display: block">
             <div class="profile-actions">
 
                 <div sec:authorize="${isAuthenticated()}" class="logged-in-buttons">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div sec:authorize="${!isAuthenticated()}" class="auth-button">
-                    <a th:href="'/login'"><button class="submit-btn" >Login</button></a>
+                    <a th:href="'/login'"><button class="submit-btn"  style="border-radius: 10px; font-weight: 500;">Login</button></a>
                 </div>
             </div>
         </div>
@@ -43,8 +43,8 @@
 
                         <select id="sorting" name="order">
                             <option value="none" selected hidden disabled>Sorting</option>
-                            <option value="date-asc" label="New First" />
-                            <option value="date-desc" label="Old First" />
+                            <option value="date-desc" label="New First" />
+                            <option value="date-asc" label="Old First" />
                             <option value="title-asc" label="Title(A-Z)" />
                             <option value="title-desc" label="Title(Z-A)" />
                         </select>

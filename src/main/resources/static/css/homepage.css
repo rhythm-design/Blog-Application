@@ -215,10 +215,6 @@ select {
     margin-right: 20px;
 }
 
-.profile-actions a:nth-child(1){
-    margin-right: 120px;
-}
-
 #tag-search{
     margin-top: 5px;
 }
