@@ -1,5 +1,7 @@
 package me.rhythmvarshney.blogapplication.controller;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import me.rhythmvarshney.blogapplication.entity.User;
 import me.rhythmvarshney.blogapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,9 @@ public class AuthenticationController {
     public String saveUserToDB(@RequestParam(value = "username", required = false) String username,
                                @RequestParam(value = "email", required = false) String email,
                                @RequestParam(value = "password", required = false) String password,
-                               @RequestParam(value = "confirmPassword", required = false) String confirmPassword){
+                               @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
+                               HttpServletRequest request) {
+
         User user = new User();
         user.setName(username);
         user.setEmail(email);
@@ -39,6 +43,11 @@ public class AuthenticationController {
         user.setRole("NORMAL");
         userService.saveUser(user);
 
+        try {
+            request.login(email, password);
+        } catch (ServletException e) {
+            System.out.println("Error while login " + e);
+        }
         return "redirect:/login";
     }
 

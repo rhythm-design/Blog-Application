@@ -35,15 +35,12 @@ public class PostController {
 
     private MergeFilterService<Post,Tag> postTagMergeFilterService;
 
-    private MergeFilterService<User,Post> userPostMergeFilterService;
-
     @Autowired
-    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> postTagMergeFilterService, UserService userService, MergeFilterService<User,Post> userPostMergeFilterService) {
+    public PostController(PostService postService, TagService tagService, MergeFilterService<Post,Tag> postTagMergeFilterService, UserService userService) {
         this.postService = postService;
         this.tagService = tagService;
         this.postTagMergeFilterService = postTagMergeFilterService;
         this.userService = userService;
-        this.userPostMergeFilterService = userPostMergeFilterService;
     }
 
     @GetMapping("/")

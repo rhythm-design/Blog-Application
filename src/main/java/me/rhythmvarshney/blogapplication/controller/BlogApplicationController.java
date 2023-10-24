@@ -40,7 +40,7 @@ public class BlogApplicationController {
     public void test() throws IOException, InterruptedException {
         System.out.println("here");
         for(int i = 1; i <= 30; i++){
-            URL url = new URL("https://api.api-ninjas.com/v1/loremipsum?paragraphs=6");
+            URL url = new URL("https://api.api-ninjas.com/v1/loremipsum?paragraphs=1");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("accept", "application/json");
             connection.setRequestProperty("x-api-key","k1/P1qg94t/wUz/eCD4QIA==w0Fb9cfeQp0NA8Iu");

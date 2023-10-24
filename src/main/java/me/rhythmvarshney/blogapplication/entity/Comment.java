@@ -1,9 +1,11 @@
 package me.rhythmvarshney.blogapplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -40,5 +42,7 @@ public class Comment {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
     })
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
+
 }

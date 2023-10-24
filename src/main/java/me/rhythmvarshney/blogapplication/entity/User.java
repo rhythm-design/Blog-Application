@@ -1,6 +1,7 @@
 package me.rhythmvarshney.blogapplication.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ public class User {
     @OneToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
     })
+    @JsonManagedReference
     private List<Post> posts;
 
     public void savePostToUser(Post post){
